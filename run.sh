@@ -1,15 +1,34 @@
 #!/bin/bash
 # ============================================================================
-# SCRIPT DE LANCEMENT - Éditeur d'Images BUT 3
+# Script d'exécution pour Linux/Mac
 # ============================================================================
 
-# Compilation si nécessaire
-if [ ! -d "bin" ] || [ ! -f "bin/MainApp.class" ]; then
-    echo "Compilation du projet..."
-    ./compile.sh
+echo "=========================================="
+echo "  LANCEMENT - Editeur d'Images MVC"
+echo "=========================================="
+echo ""
+
+# Vérification que le dossier bin existe
+if [ ! -d "bin" ]; then
+    echo "ERREUR: Le dossier bin n'existe pas"
+    echo "Veuillez d'abord compiler avec ./compile.sh"
+    exit 1
 fi
 
-# Lancement
-echo "Lancement de l'application..."
-java -cp bin MainApp
+# Vérification que ApplicationPrincipale.class existe
+if [ ! -f "bin/ApplicationPrincipale.class" ]; then
+    echo "ERREUR: L'application n'est pas compilée"
+    echo "Veuillez d'abord compiler avec ./compile.sh"
+    exit 1
+fi
 
+# Lancement de l'application
+echo "Lancement de l'application..."
+echo ""
+java -cp bin ApplicationPrincipale
+
+# Si l'application se termine, afficher un message
+echo ""
+echo "=========================================="
+echo "  Application terminée"
+echo "=========================================="

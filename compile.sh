@@ -1,30 +1,35 @@
 #!/bin/bash
 # ============================================================================
-# SCRIPT DE COMPILATION - Éditeur d'Images BUT 3
+# Script de compilation pour Linux/Mac
 # ============================================================================
-# Équipe 6 - Programmation Multimédia
 
-echo "=== Compilation du projet ==="
+echo "=========================================="
+echo "  COMPILATION - Editeur d'Images MVC"
+echo "=========================================="
+echo ""
 
-# Création du dossier de sortie
-mkdir -p bin
+# Création du dossier bin s'il n'existe pas
+if [ ! -d "bin" ]; then
+    echo "Création du dossier bin..."
+    mkdir -p bin
+fi
 
-# Compilation de tous les fichiers Java
-echo "Compilation des fichiers Java..."
-javac -d bin src/*.java
+# Compilation avec encodage UTF-8
+echo "Compilation en cours..."
+javac -encoding UTF-8 -d bin -sourcepath src src/ApplicationPrincipale.java
 
 # Vérification du résultat
 if [ $? -eq 0 ]; then
-    echo "✓ Compilation réussie !"
     echo ""
-    echo "Pour lancer l'application :"
-    echo "  cd bin"
-    echo "  java MainApp"
+    echo "=========================================="
+    echo "  COMPILATION REUSSIE !"
+    echo "=========================================="
     echo ""
-    echo "Ou directement :"
-    echo "  java -cp bin MainApp"
+    echo "Pour lancer l'application : ./run.sh"
 else
-    echo "✗ Erreur de compilation"
+    echo ""
+    echo "=========================================="
+    echo "  ERREUR DE COMPILATION"
+    echo "=========================================="
     exit 1
 fi
-
