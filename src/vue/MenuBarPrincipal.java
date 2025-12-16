@@ -20,16 +20,8 @@ import javax.swing.*;
  */
 public class MenuBarPrincipal extends JMenuBar {
 
-    // ========================================================================
-    // ATTRIBUTS
-    // ========================================================================
-
     private ControleurFichier controleurFichier;
     private ControleurImage controleurImage;
-
-    // ========================================================================
-    // CONSTRUCTEUR
-    // ========================================================================
 
     /**
      * Construit la barre de menu avec les contrôleurs nécessaires.
@@ -43,10 +35,6 @@ public class MenuBarPrincipal extends JMenuBar {
 
         creerMenus();
     }
-
-    // ========================================================================
-    // CRÉATION DES MENUS
-    // ========================================================================
 
     private void creerMenus() {
         add(creerMenuFichier());

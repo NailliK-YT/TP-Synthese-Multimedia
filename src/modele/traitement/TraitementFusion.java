@@ -17,10 +17,6 @@ import java.awt.image.BufferedImage;
  */
 public class TraitementFusion {
 
-    // ========================================================================
-    // SUPERPOSITION SIMPLE
-    // ========================================================================
-
     /**
      * Superpose une image sur une autre à une position donnée.
      * 
@@ -41,24 +37,18 @@ public class TraitementFusion {
      */
     public static BufferedImage superposer(BufferedImage destination, BufferedImage source,
             int posX, int posY) {
-        // Copie de l'image destination pour ne pas modifier l'originale
         BufferedImage resultat = UtilitaireImage.copierImage(destination);
 
-        // Parcours de tous les pixels de l'image source
         for (int y = 0; y < source.getHeight(); y++) {
             for (int x = 0; x < source.getWidth(); x++) {
-                // Calcul de la position sur l'image destination
                 int destX = posX + x;
                 int destY = posY + y;
 
-                // Vérification que le pixel est dans les limites
                 if (destX >= 0 && destX < resultat.getWidth() &&
                         destY >= 0 && destY < resultat.getHeight()) {
 
-                    // Récupération de la couleur du pixel source
                     int couleurSource = source.getRGB(x, y);
 
-                    // Copie du pixel sur la destination
                     resultat.setRGB(destX, destY, couleurSource);
                 }
             }
@@ -66,10 +56,6 @@ public class TraitementFusion {
 
         return resultat;
     }
-
-    // ========================================================================
-    // SUPERPOSITION AVEC TRANSPARENCE (CANAL ALPHA)
-    // ========================================================================
 
     /**
      * Superpose une image sur une autre en respectant la transparence.
@@ -96,41 +82,32 @@ public class TraitementFusion {
                 int destX = posX + x;
                 int destY = posY + y;
 
-                // Vérification des limites
                 if (destX >= 0 && destX < resultat.getWidth() &&
                         destY >= 0 && destY < resultat.getHeight()) {
 
-                    // Récupération des couleurs source et destination
                     int couleurSource = source.getRGB(x, y);
                     int couleurDest = resultat.getRGB(destX, destY);
 
-                    // Extraction des composantes
                     int[] compSource = UtilitaireImage.extraireComposantes(couleurSource);
                     int[] compDest = UtilitaireImage.extraireComposantes(couleurDest);
 
-                    // Alpha de la source (0 = transparent, 255 = opaque)
                     int alphaSource = compSource[0];
 
-                    // Si le pixel est complètement transparent, on ne fait rien
                     if (alphaSource == 0) {
                         continue;
                     }
 
-                    // Si le pixel est complètement opaque, on écrase simplement
                     if (alphaSource == 255) {
                         resultat.setRGB(destX, destY, couleurSource);
                         continue;
                     }
 
-                    // Sinon, on fait le mélange (alpha blending)
                     int nouveauRouge = melanger(compSource[1], compDest[1], alphaSource);
                     int nouveauVert = melanger(compSource[2], compDest[2], alphaSource);
                     int nouveauBleu = melanger(compSource[3], compDest[3], alphaSource);
 
-                    // L'alpha résultant est le maximum des deux
                     int nouveauAlpha = Math.max(alphaSource, compDest[0]);
 
-                    // Combinaison et application
                     int nouvelleCouleur = UtilitaireImage.combinerComposantes(
                             nouveauAlpha, nouveauRouge, nouveauVert, nouveauBleu);
                     resultat.setRGB(destX, destY, nouvelleCouleur);
@@ -150,13 +127,8 @@ public class TraitementFusion {
      * @return La valeur mélangée
      */
     private static int melanger(int valeurSource, int valeurDest, int alpha) {
-        // Formule : (alpha * source + (255 - alpha) * dest) / 255
         return (alpha * valeurSource + (255 - alpha) * valeurDest) / 255;
     }
-
-    // ========================================================================
-    // SUPERPOSITION AVEC COULEUR TRANSPARENTE (CLÉ DE CHROMINANCE)
-    // ========================================================================
 
     /**
      * Superpose une image en rendant une couleur spécifique transparente.
@@ -195,25 +167,17 @@ public class TraitementFusion {
 
                     int couleurPixel = source.getRGB(x, y);
 
-                    // Calcul de la distance avec la couleur transparente
                     double distance = UtilitaireImage.distanceCouleur(couleurPixel, couleurTransparente);
 
-                    // Si la distance est supérieure à la tolérance, on copie le pixel
-                    // (sinon on considère que c'est la couleur transparente)
                     if (distance > tolerance) {
                         resultat.setRGB(destX, destY, couleurPixel);
                     }
-                    // Si distance <= tolerance, on ne copie pas (le pixel est "transparent")
                 }
             }
         }
 
         return resultat;
     }
-
-    // ========================================================================
-    // FUSION DE DEUX IMAGES (50/50)
-    // ========================================================================
 
     /**
      * Fusionne deux images avec un ratio donné.
@@ -229,26 +193,21 @@ public class TraitementFusion {
      */
     public static BufferedImage fusionner(BufferedImage image1, BufferedImage image2,
             double ratioImage1) {
-        // Dimensions du résultat : le maximum des deux images
         int largeur = Math.max(image1.getWidth(), image2.getWidth());
         int hauteur = Math.max(image1.getHeight(), image2.getHeight());
 
         BufferedImage resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
 
-        // Ratio de l'image 2
         double ratioImage2 = 1.0 - ratioImage1;
 
         for (int y = 0; y < hauteur; y++) {
             for (int x = 0; x < largeur; x++) {
-                // Récupération des couleurs (noir transparent si hors limites)
                 int couleur1 = obtenirCouleur(image1, x, y);
                 int couleur2 = obtenirCouleur(image2, x, y);
 
-                // Extraction des composantes
                 int[] comp1 = UtilitaireImage.extraireComposantes(couleur1);
                 int[] comp2 = UtilitaireImage.extraireComposantes(couleur2);
 
-                // Mélange selon le ratio
                 int nouveauAlpha = (int) (comp1[0] * ratioImage1 + comp2[0] * ratioImage2);
                 int nouveauRouge = (int) (comp1[1] * ratioImage1 + comp2[1] * ratioImage2);
                 int nouveauVert = (int) (comp1[2] * ratioImage1 + comp2[2] * ratioImage2);
@@ -270,13 +229,8 @@ public class TraitementFusion {
         if (x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight()) {
             return image.getRGB(x, y);
         }
-        // Couleur transparente si hors limites
         return 0x00000000;
     }
-
-    // ========================================================================
-    // CRÉATION DE COULEUR TRANSPARENTE DEPUIS RGB
-    // ========================================================================
 
     /**
      * Crée une couleur ARGB à partir de valeurs RGB.

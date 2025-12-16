@@ -23,10 +23,6 @@ import vue.FramePrincipal;
  */
 public class ControleurPrincipal implements ModeleImage.EcouteurModele {
 
-    // ========================================================================
-    // ATTRIBUTS
-    // ========================================================================
-
     /** Le modèle contenant les données de l'application */
     private final ModeleImage modele;
 
@@ -39,10 +35,6 @@ public class ControleurPrincipal implements ModeleImage.EcouteurModele {
     /** Sous-contrôleur pour les opérations sur images */
     private final ControleurImage controleurImage;
 
-    // ========================================================================
-    // CONSTRUCTEUR
-    // ========================================================================
-
     /**
      * Constructeur du contrôleur principal.
      * 
@@ -53,14 +45,9 @@ public class ControleurPrincipal implements ModeleImage.EcouteurModele {
         this.modele = modele;
         this.vue = vue;
 
-        // Création des sous-contrôleurs
         this.controleurFichier = new ControleurFichier(modele, vue);
         this.controleurImage = new ControleurImage(modele, vue);
     }
-
-    // ========================================================================
-    // INITIALISATION
-    // ========================================================================
 
     /**
      * Initialise le contrôleur et lie le modèle à la vue.
@@ -70,22 +57,15 @@ public class ControleurPrincipal implements ModeleImage.EcouteurModele {
      * et le contrôleur met à jour la vue en conséquence.
      */
     public void initialiser() {
-        // Enregistrement comme écouteur du modèle
         modele.ajouterEcouteur(this);
 
-        // Liaison des événements de la vue aux contrôleurs
         vue.definirControleurFichier(controleurFichier);
         vue.definirControleurImage(controleurImage);
 
-        // Affichage initial
         modeleModifie();
 
         System.out.println("Contrôleur principal initialisé - Prêt !");
     }
-
-    // ========================================================================
-    // IMPLÉMENTATION DE L'ÉCOUTEUR
-    // ========================================================================
 
     /**
      * Appelé quand le modèle a changé.
@@ -93,10 +73,8 @@ public class ControleurPrincipal implements ModeleImage.EcouteurModele {
      */
     @Override
     public void modeleModifie() {
-        // Mise à jour de l'affichage de l'image
         vue.afficherImage(modele.obtenirImagePrincipale());
 
-        // Mise à jour des informations
         if (modele.possedeImagePrincipale()) {
             int largeur = modele.obtenirImagePrincipale().getWidth();
             int hauteur = modele.obtenirImagePrincipale().getHeight();
@@ -105,10 +83,6 @@ public class ControleurPrincipal implements ModeleImage.EcouteurModele {
             vue.mettreAJourStatut("Aucune image chargée. Utilisez Fichier > Ouvrir");
         }
     }
-
-    // ========================================================================
-    // ACCESSEURS
-    // ========================================================================
 
     /**
      * @return Le modèle de l'application

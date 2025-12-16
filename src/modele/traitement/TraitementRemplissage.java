@@ -24,10 +24,6 @@ import java.util.Queue;
  */
 public class TraitementRemplissage {
 
-    // ========================================================================
-    // POT DE PEINTURE AVEC FILE (ÉVITE LE STACK OVERFLOW)
-    // ========================================================================
-
     /**
      * Remplit une zone avec une nouvelle couleur (pot de peinture).
      * 
@@ -55,65 +51,49 @@ public class TraitementRemplissage {
      */
     public static BufferedImage remplir(BufferedImage image, int startX, int startY,
             int nouvelleCouleur, double tolerance) {
-        // Copie de l'image pour ne pas modifier l'originale
         BufferedImage resultat = UtilitaireImage.copierImage(image);
 
         int largeur = resultat.getWidth();
         int hauteur = resultat.getHeight();
 
-        // Vérification des coordonnées de départ
         if (startX < 0 || startX >= largeur || startY < 0 || startY >= hauteur) {
             System.err.println("ERREUR : Coordonnées de départ hors de l'image");
             return resultat;
         }
 
-        // Couleur d'origine (celle qu'on veut remplacer)
         int couleurOrigine = resultat.getRGB(startX, startY);
 
-        // Si la couleur d'origine est déjà la nouvelle couleur, rien à faire
         if (UtilitaireImage.distanceCouleur(couleurOrigine, nouvelleCouleur) == 0) {
             System.out.println("La zone est déjà de la couleur demandée");
             return resultat;
         }
 
-        // Tableau pour marquer les pixels déjà visités
-        // Cela évite de traiter plusieurs fois le même pixel
         boolean[][] visite = new boolean[largeur][hauteur];
 
-        // File d'attente pour les pixels à traiter
-        // On stocke les coordonnées sous forme de tableau [x, y]
         Queue<int[]> file = new LinkedList<>();
 
-        // On commence par le pixel de départ
         file.add(new int[] { startX, startY });
         visite[startX][startY] = true;
 
-        // Compteur pour affichage (debug)
         int pixelsRemplis = 0;
 
-        // Traitement de la file
         while (!file.isEmpty()) {
-            // On retire le premier pixel de la file
             int[] pixel = file.poll();
             int x = pixel[0];
             int y = pixel[1];
 
-            // Récupération de la couleur du pixel actuel
             int couleurActuelle = resultat.getRGB(x, y);
 
-            // Vérification si la couleur est assez proche de l'origine
             double distance = UtilitaireImage.distanceCouleur(couleurActuelle, couleurOrigine);
 
             if (distance <= tolerance) {
-                // On colorie le pixel
                 resultat.setRGB(x, y, nouvelleCouleur);
                 pixelsRemplis++;
 
-                // On ajoute les 4 voisins (haut, bas, gauche, droite)
-                ajouterVoisin(file, visite, largeur, hauteur, x - 1, y); // Gauche
-                ajouterVoisin(file, visite, largeur, hauteur, x + 1, y); // Droite
-                ajouterVoisin(file, visite, largeur, hauteur, x, y - 1); // Haut
-                ajouterVoisin(file, visite, largeur, hauteur, x, y + 1); // Bas
+                ajouterVoisin(file, visite, largeur, hauteur, x - 1, y);
+                ajouterVoisin(file, visite, largeur, hauteur, x + 1, y);
+                ajouterVoisin(file, visite, largeur, hauteur, x, y - 1);
+                ajouterVoisin(file, visite, largeur, hauteur, x, y + 1);
             }
         }
 
@@ -126,19 +106,13 @@ public class TraitementRemplissage {
      */
     private static void ajouterVoisin(Queue<int[]> file, boolean[][] visite,
             int largeur, int hauteur, int x, int y) {
-        // Vérification des limites
         if (x >= 0 && x < largeur && y >= 0 && y < hauteur) {
-            // Vérification que le pixel n'a pas été visité
             if (!visite[x][y]) {
                 visite[x][y] = true;
                 file.add(new int[] { x, y });
             }
         }
     }
-
-    // ========================================================================
-    // POT DE PEINTURE AVEC 8 DIRECTIONS (DIAGONALES INCLUSES)
-    // ========================================================================
 
     /**
      * Version du pot de peinture qui remplit aussi en diagonale.
@@ -177,7 +151,6 @@ public class TraitementRemplissage {
         file.add(new int[] { startX, startY });
         visite[startX][startY] = true;
 
-        // Les 8 directions : haut, bas, gauche, droite + 4 diagonales
         int[] dx = { -1, 0, 1, -1, 1, -1, 0, 1 };
         int[] dy = { -1, -1, -1, 0, 0, 1, 1, 1 };
 
@@ -192,7 +165,6 @@ public class TraitementRemplissage {
             if (distance <= tolerance) {
                 resultat.setRGB(x, y, nouvelleCouleur);
 
-                // Ajout des 8 voisins
                 for (int i = 0; i < 8; i++) {
                     int nx = x + dx[i];
                     int ny = y + dy[i];
@@ -203,10 +175,6 @@ public class TraitementRemplissage {
 
         return resultat;
     }
-
-    // ========================================================================
-    // VERSION RÉCURSIVE (POUR PETITES ZONES UNIQUEMENT)
-    // ========================================================================
 
     /**
      * Version récursive du pot de peinture.
@@ -229,36 +197,27 @@ public class TraitementRemplissage {
     public static void remplirRecursif(BufferedImage image, int x, int y,
             int nouvelleCouleur, int couleurOrigine,
             double tolerance) {
-        // Conditions d'arrêt
         if (x < 0 || x >= image.getWidth() || y < 0 || y >= image.getHeight()) {
-            return; // Hors limites
+            return;
         }
 
         int couleurActuelle = image.getRGB(x, y);
 
-        // Si le pixel a déjà la nouvelle couleur, on s'arrête
         if (couleurActuelle == nouvelleCouleur) {
             return;
         }
 
-        // Si la couleur est trop différente de l'origine, on s'arrête
         if (UtilitaireImage.distanceCouleur(couleurActuelle, couleurOrigine) > tolerance) {
             return;
         }
 
-        // On colorie le pixel
         image.setRGB(x, y, nouvelleCouleur);
 
-        // Appels récursifs sur les 4 voisins
         remplirRecursif(image, x - 1, y, nouvelleCouleur, couleurOrigine, tolerance);
         remplirRecursif(image, x + 1, y, nouvelleCouleur, couleurOrigine, tolerance);
         remplirRecursif(image, x, y - 1, nouvelleCouleur, couleurOrigine, tolerance);
         remplirRecursif(image, x, y + 1, nouvelleCouleur, couleurOrigine, tolerance);
     }
-
-    // ========================================================================
-    // UTILITAIRES
-    // ========================================================================
 
     /**
      * Crée une couleur ARGB à partir de composantes RGB.

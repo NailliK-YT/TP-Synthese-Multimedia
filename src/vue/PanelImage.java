@@ -25,21 +25,12 @@ import java.awt.image.BufferedImage;
  */
 public class PanelImage extends JPanel {
 
-    // ========================================================================
-    // ATTRIBUTS
-    // ========================================================================
-
     private BufferedImage image;
     private ControleurImage controleurImage;
-
-    // ========================================================================
-    // CONSTRUCTEUR
-    // ========================================================================
 
     public PanelImage() {
         setBackground(new Color(200, 200, 200));
 
-        // Gestion des clics pour le pot de peinture
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -49,10 +40,6 @@ public class PanelImage extends JPanel {
             }
         });
     }
-
-    // ========================================================================
-    // MÉTHODES PUBLIQUES
-    // ========================================================================
 
     /**
      * Définit le contrôleur d'image pour déléguer les événements.
@@ -76,10 +63,6 @@ public class PanelImage extends JPanel {
         revalidate();
         repaint();
     }
-
-    // ========================================================================
-    // AFFICHAGE
-    // ========================================================================
 
     @Override
     protected void paintComponent(Graphics g) {

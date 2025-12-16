@@ -30,10 +30,6 @@ import java.awt.image.BufferedImage;
  */
 public class FramePrincipal extends JFrame {
 
-    // ========================================================================
-    // ATTRIBUTS
-    // ========================================================================
-
     private ControleurFichier controleurFichier;
     private ControleurImage controleurImage;
 
@@ -41,10 +37,6 @@ public class FramePrincipal extends JFrame {
     private PanelOutils panelOutils;
     private PanelStatut panelStatut;
     private MenuBarPrincipal menuBarPrincipal;
-
-    // ========================================================================
-    // CONSTRUCTEUR
-    // ========================================================================
 
     public FramePrincipal() {
         super("Éditeur d'Images - Architecture MVC - Équipe 6");
@@ -58,34 +50,22 @@ public class FramePrincipal extends JFrame {
         setVisible(true);
     }
 
-    // ========================================================================
-    // CRÉATION DE L'INTERFACE
-    // ========================================================================
-
     private void creerInterface() {
-        // Création des composants
         panelImage = new PanelImage();
         panelOutils = new PanelOutils();
         panelStatut = new PanelStatut();
 
-        // Configuration du layout principal
         JPanel panneauPrincipal = new JPanel(new BorderLayout());
 
-        // Zone d'affichage de l'image avec scroll
         JScrollPane scrollPane = new JScrollPane(panelImage);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Image"));
 
-        // Assemblage des composants
         panneauPrincipal.add(scrollPane, BorderLayout.CENTER);
         panneauPrincipal.add(panelStatut, BorderLayout.SOUTH);
         panneauPrincipal.add(panelOutils, BorderLayout.EAST);
 
         add(panneauPrincipal);
     }
-
-    // ========================================================================
-    // DÉFINITION DES CONTRÔLEURS
-    // ========================================================================
 
     /**
      * Définit le contrôleur de fichier et initialise la barre de menu.
@@ -95,10 +75,8 @@ public class FramePrincipal extends JFrame {
     public void definirControleurFichier(ControleurFichier controleur) {
         this.controleurFichier = controleur;
 
-        // Configurer le panneau d'outils
         panelOutils.setControleurFichier(controleur);
 
-        // Créer la barre de menu (nécessite les deux contrôleurs)
         if (controleurImage != null) {
             menuBarPrincipal = new MenuBarPrincipal(controleurFichier, controleurImage);
             setJMenuBar(menuBarPrincipal);
@@ -113,24 +91,17 @@ public class FramePrincipal extends JFrame {
     public void definirControleurImage(ControleurImage controleur) {
         this.controleurImage = controleur;
 
-        // Configurer les composants
         panelImage.setControleurImage(controleur);
         panelOutils.setControleurImage(controleur);
         panelOutils.setFramePrincipal(this);
 
-        // Initialiser le panneau d'outils maintenant que tout est configuré
         panelOutils.initialiser();
 
-        // Créer la barre de menu si le contrôleur fichier est déjà défini
         if (controleurFichier != null) {
             menuBarPrincipal = new MenuBarPrincipal(controleurFichier, controleurImage);
             setJMenuBar(menuBarPrincipal);
         }
     }
-
-    // ========================================================================
-    // AFFICHAGE
-    // ========================================================================
 
     /**
      * Affiche l'image dans le panneau d'affichage.

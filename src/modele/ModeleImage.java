@@ -21,10 +21,6 @@ import java.util.List;
  */
 public class ModeleImage {
 
-    // ========================================================================
-    // ATTRIBUTS
-    // ========================================================================
-
     /** Image principale affichée et modifiée */
     private BufferedImage imagePrincipale;
 
@@ -37,10 +33,6 @@ public class ModeleImage {
     /** Liste des écouteurs à notifier lors des changements */
     private List<EcouteurModele> ecouteurs;
 
-    // ========================================================================
-    // CONSTRUCTEUR
-    // ========================================================================
-
     /**
      * Constructeur du modèle.
      * Initialise les structures de données.
@@ -52,10 +44,6 @@ public class ModeleImage {
         this.imageOriginale = null;
     }
 
-    // ========================================================================
-    // GESTION DES IMAGES
-    // ========================================================================
-
     /**
      * Définit une nouvelle image principale.
      * Sauvegarde automatiquement une copie comme image originale.
@@ -65,8 +53,6 @@ public class ModeleImage {
     public void definirImagePrincipale(BufferedImage image) {
         this.imagePrincipale = image;
 
-        // Si c'est la première fois qu'on charge cette image,
-        // on sauvegarde l'originale pour pouvoir la restaurer
         if (image != null && this.imageOriginale == null) {
             this.imageOriginale = UtilitaireImage.copierImage(image);
         }
@@ -114,10 +100,6 @@ public class ModeleImage {
         this.imageOriginale = null;
         notifierChangement();
     }
-
-    // ========================================================================
-    // ACCESSEURS (GETTERS)
-    // ========================================================================
 
     /**
      * @return L'image principale (peut être null)
@@ -167,10 +149,6 @@ public class ModeleImage {
         return imageOriginale != null;
     }
 
-    // ========================================================================
-    // PATTERN OBSERVER
-    // ========================================================================
-
     /**
      * Ajoute un écouteur qui sera notifié des changements.
      * 
@@ -199,10 +177,6 @@ public class ModeleImage {
             ecouteur.modeleModifie();
         }
     }
-
-    // ========================================================================
-    // INTERFACE ÉCOUTEUR
-    // ========================================================================
 
     /**
      * Interface pour les objets qui veulent être notifiés des changements

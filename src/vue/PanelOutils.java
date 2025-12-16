@@ -24,25 +24,13 @@ import java.awt.event.ActionListener;
  */
 public class PanelOutils extends JPanel {
 
-    // ========================================================================
-    // ATTRIBUTS
-    // ========================================================================
-
     private ControleurFichier controleurFichier;
     private ControleurImage controleurImage;
     private FramePrincipal framePrincipal;
 
-    // ========================================================================
-    // CONSTRUCTEUR
-    // ========================================================================
-
     public PanelOutils() {
         setLayout(new BorderLayout());
     }
-
-    // ========================================================================
-    // CONFIGURATION
-    // ========================================================================
 
     /**
      * Définit le contrôleur de fichiers.
@@ -82,16 +70,11 @@ public class PanelOutils extends JPanel {
         repaint();
     }
 
-    // ========================================================================
-    // CRÉATION DES BOUTONS
-    // ========================================================================
-
     private JPanel creerPanneauBoutons() {
         JPanel panneauPrincipal = new JPanel();
         panneauPrincipal.setLayout(new BoxLayout(panneauPrincipal, BoxLayout.Y_AXIS));
         panneauPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // SECTION 1 : FICHIERS
         JPanel sectionFichiers = creerSection("FICHIERS");
         ajouterBouton(sectionFichiers, "Ouvrir Image 1", e -> {
             if (controleurFichier != null)
@@ -110,7 +93,6 @@ public class PanelOutils extends JPanel {
                 controleurFichier.restaurerOriginale();
         });
 
-        // SECTION 2 : FUSION D'IMAGES
         JPanel sectionFusion = creerSection("FUSION 2 IMAGES");
         ajouterBouton(sectionFusion, "Definir Position Image 2", e -> {
             if (controleurImage != null)
@@ -133,7 +115,6 @@ public class PanelOutils extends JPanel {
                 controleurImage.fusionnerImages();
         });
 
-        // SECTION 3 : TRANSFORMATIONS
         JPanel sectionTransform = creerSection("TRANSFORMATIONS");
         ajouterBouton(sectionTransform, "Rotation Droite", e -> {
             if (controleurImage != null)
@@ -160,7 +141,6 @@ public class PanelOutils extends JPanel {
                 controleurImage.convertirEnGris();
         });
 
-        // SECTION 4 : OUTILS DE DESSIN
         JPanel sectionOutils = creerSection("OUTILS DESSIN");
         ajouterBouton(sectionOutils, "Pot de Peinture", e -> {
             if (controleurImage != null) {

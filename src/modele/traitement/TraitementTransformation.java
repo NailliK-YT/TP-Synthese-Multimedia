@@ -18,10 +18,6 @@ import java.awt.image.BufferedImage;
  */
 public class TraitementTransformation {
 
-    // ========================================================================
-    // ROTATION
-    // ========================================================================
-
     /**
      * Effectue une rotation de 90° dans le sens horaire.
      * 
@@ -39,15 +35,12 @@ public class TraitementTransformation {
         int largeur = image.getWidth();
         int hauteur = image.getHeight();
 
-        // Les dimensions sont inversées après rotation
         BufferedImage resultat = UtilitaireImage.creerImageVide(hauteur, largeur);
 
         for (int y = 0; y < hauteur; y++) {
             for (int x = 0; x < largeur; x++) {
                 int couleur = image.getRGB(x, y);
 
-                // Nouvelle position après rotation 90° horaire
-                // Le pixel en (x, y) va en (hauteur - 1 - y, x)
                 int nouveauX = hauteur - 1 - y;
                 int nouveauY = x;
 
@@ -77,7 +70,6 @@ public class TraitementTransformation {
             for (int x = 0; x < largeur; x++) {
                 int couleur = image.getRGB(x, y);
 
-                // Nouvelle position après rotation 90° anti-horaire
                 int nouveauX = y;
                 int nouveauY = largeur - 1 - x;
 
@@ -102,14 +94,12 @@ public class TraitementTransformation {
         int largeur = image.getWidth();
         int hauteur = image.getHeight();
 
-        // Les dimensions restent les mêmes
         BufferedImage resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
 
         for (int y = 0; y < hauteur; y++) {
             for (int x = 0; x < largeur; x++) {
                 int couleur = image.getRGB(x, y);
 
-                // Nouvelle position après rotation 180°
                 int nouveauX = largeur - 1 - x;
                 int nouveauY = hauteur - 1 - y;
 
@@ -119,10 +109,6 @@ public class TraitementTransformation {
 
         return resultat;
     }
-
-    // ========================================================================
-    // LUMINOSITÉ
-    // ========================================================================
 
     /**
      * Ajuste la luminosité de l'image.
@@ -151,10 +137,8 @@ public class TraitementTransformation {
                 int couleur = image.getRGB(x, y);
                 int[] composantes = UtilitaireImage.extraireComposantes(couleur);
 
-                // L'alpha ne change pas
                 int alpha = composantes[0];
 
-                // On ajoute le facteur à chaque composante RGB
                 int nouveauRouge = borner(composantes[1] + facteur);
                 int nouveauVert = borner(composantes[2] + facteur);
                 int nouveauBleu = borner(composantes[3] + facteur);
@@ -167,10 +151,6 @@ public class TraitementTransformation {
 
         return resultat;
     }
-
-    // ========================================================================
-    // CONTRASTE
-    // ========================================================================
 
     /**
      * Ajuste le contraste de l'image.
@@ -203,8 +183,6 @@ public class TraitementTransformation {
 
                 int alpha = composantes[0];
 
-                // Application de la formule de contraste
-                // On centre sur 128 (gris moyen)
                 int nouveauRouge = borner((int) (128 + (composantes[1] - 128) * facteur));
                 int nouveauVert = borner((int) (128 + (composantes[2] - 128) * facteur));
                 int nouveauBleu = borner((int) (128 + (composantes[3] - 128) * facteur));
@@ -217,10 +195,6 @@ public class TraitementTransformation {
 
         return resultat;
     }
-
-    // ========================================================================
-    // MODIFICATION DE TEINTE (HUE SHIFT)
-    // ========================================================================
 
     /**
      * Modifie la teinte de l'image (rotation dans l'espace HSV).
@@ -249,15 +223,12 @@ public class TraitementTransformation {
                 int vert = composantes[2];
                 int bleu = composantes[3];
 
-                // Conversion RGB vers HSV
                 float[] hsv = rgbVersHsv(rouge, vert, bleu);
 
-                // Décalage de la teinte (modulo 360)
                 hsv[0] = (hsv[0] + decalage) % 360;
                 if (hsv[0] < 0)
                     hsv[0] += 360;
 
-                // Conversion HSV vers RGB
                 int[] nouveauRgb = hsvVersRgb(hsv[0], hsv[1], hsv[2]);
 
                 int nouvelleCouleur = UtilitaireImage.combinerComposantes(
@@ -268,10 +239,6 @@ public class TraitementTransformation {
 
         return resultat;
     }
-
-    // ========================================================================
-    // FILTRES COULEUR SIMPLES
-    // ========================================================================
 
     /**
      * Convertit l'image en niveaux de gris.
@@ -297,12 +264,10 @@ public class TraitementTransformation {
 
                 int alpha = composantes[0];
 
-                // Calcul du niveau de gris (moyenne pondérée)
                 int gris = (int) (0.299 * composantes[1] +
                         0.587 * composantes[2] +
                         0.114 * composantes[3]);
 
-                // Le gris a la même valeur pour R, G et B
                 int nouvelleCouleur = UtilitaireImage.combinerComposantes(alpha, gris, gris, gris);
                 resultat.setRGB(x, y, nouvelleCouleur);
             }
@@ -345,10 +310,6 @@ public class TraitementTransformation {
         return resultat;
     }
 
-    // ========================================================================
-    // MÉTHODES UTILITAIRES PRIVÉES
-    // ========================================================================
-
     /**
      * Borne une valeur entre 0 et 255.
      */
@@ -365,7 +326,6 @@ public class TraitementTransformation {
      * @return Un tableau [H, S, V] avec H en degrés (0-360), S et V en % (0-100)
      */
     private static float[] rgbVersHsv(int r, int g, int b) {
-        // Normalisation entre 0 et 1
         float rNorm = r / 255f;
         float gNorm = g / 255f;
         float bNorm = b / 255f;
@@ -376,9 +336,8 @@ public class TraitementTransformation {
 
         float h = 0, s, v;
 
-        // Calcul de la teinte (Hue)
         if (delta == 0) {
-            h = 0; // Couleur achromatique (gris)
+            h = 0;
         } else if (max == rNorm) {
             h = 60 * (((gNorm - bNorm) / delta) % 6);
         } else if (max == gNorm) {
@@ -390,10 +349,8 @@ public class TraitementTransformation {
         if (h < 0)
             h += 360;
 
-        // Calcul de la saturation
         s = (max == 0) ? 0 : (delta / max) * 100;
 
-        // Calcul de la valeur (luminosité)
         v = max * 100;
 
         return new float[] { h, s, v };
@@ -408,11 +365,10 @@ public class TraitementTransformation {
      * @return Un tableau [R, G, B] avec des valeurs 0-255
      */
     private static int[] hsvVersRgb(float h, float s, float v) {
-        // Normalisation
         s = s / 100f;
         v = v / 100f;
 
-        float c = v * s; // Chroma
+        float c = v * s;
         float x = c * (1 - Math.abs((h / 60) % 2 - 1));
         float m = v - c;
 

@@ -25,25 +25,13 @@ import java.io.File;
  */
 public class ControleurFichier {
 
-    // ========================================================================
-    // ATTRIBUTS
-    // ========================================================================
-
     private final ModeleImage modele;
     private final FramePrincipal vue;
-
-    // ========================================================================
-    // CONSTRUCTEUR
-    // ========================================================================
 
     public ControleurFichier(ModeleImage modele, FramePrincipal vue) {
         this.modele = modele;
         this.vue = vue;
     }
-
-    // ========================================================================
-    // OPÉRATIONS FICHIER
-    // ========================================================================
 
     /**
      * Ouvre une image principale via un dialogue de fichier.
@@ -110,7 +98,6 @@ public class ControleurFichier {
         if (resultat == JFileChooser.APPROVE_OPTION) {
             String chemin = selecteur.getSelectedFile().getAbsolutePath();
 
-            // Ajout de l'extension .png si nécessaire
             if (!chemin.toLowerCase().endsWith(".png")) {
                 chemin += ".png";
             }

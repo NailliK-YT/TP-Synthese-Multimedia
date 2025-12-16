@@ -19,15 +19,7 @@ import java.awt.*;
  */
 public class PanelStatut extends JPanel {
 
-    // ========================================================================
-    // ATTRIBUTS
-    // ========================================================================
-
     private JLabel labelStatut;
-
-    // ========================================================================
-    // CONSTRUCTEUR
-    // ========================================================================
 
     public PanelStatut() {
         setLayout(new BorderLayout());
@@ -37,10 +29,6 @@ public class PanelStatut extends JPanel {
 
         add(labelStatut, BorderLayout.CENTER);
     }
-
-    // ========================================================================
-    // MÉTHODES PUBLIQUES
-    // ========================================================================
 
     /**
      * Met à jour le message affiché dans la barre de statut.

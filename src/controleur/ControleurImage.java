@@ -30,34 +30,29 @@ import java.awt.image.BufferedImage;
  */
 public class ControleurImage {
 
-    // ========================================================================
-    // ATTRIBUTS
-    // ========================================================================
-
     private final ModeleImage modele;
     private final FramePrincipal vue;
 
-    // Paramètres du pot de peinture
     private Color couleurPeinture = Color.RED;
     private double tolerancePeinture = 30.0;
 
-    // Position pour fusion
     private int positionX = 0;
     private int positionY = 0;
 
-    // ========================================================================
-    // CONSTRUCTEUR
-    // ========================================================================
-
+    /**
+     * Constructeur du contrôleur d'image.
+     * 
+     * @param modele Le modèle contenant les images
+     * @param vue    La vue principale de l'application
+     */
     public ControleurImage(ModeleImage modele, FramePrincipal vue) {
         this.modele = modele;
         this.vue = vue;
     }
 
-    // ========================================================================
-    // TRANSFORMATIONS
-    // ========================================================================
-
+    /**
+     * Applique une rotation de 90° dans le sens horaire à l'image principale.
+     */
     public void appliquerRotation90Droite() {
         if (!verifierImage())
             return;
@@ -66,6 +61,9 @@ public class ControleurImage {
         modele.mettreAJourImagePrincipale(resultat);
     }
 
+    /**
+     * Applique une rotation de 90° dans le sens anti-horaire à l'image principale.
+     */
     public void appliquerRotation90Gauche() {
         if (!verifierImage())
             return;
@@ -74,6 +72,9 @@ public class ControleurImage {
         modele.mettreAJourImagePrincipale(resultat);
     }
 
+    /**
+     * Applique une rotation de 180° à l'image principale.
+     */
     public void appliquerRotation180() {
         if (!verifierImage())
             return;
@@ -82,6 +83,11 @@ public class ControleurImage {
         modele.mettreAJourImagePrincipale(resultat);
     }
 
+    /**
+     * Affiche un dialogue permettant d'ajuster la luminosité de l'image.
+     * L'utilisateur peut choisir une valeur entre -100 (plus sombre) et +100 (plus
+     * clair).
+     */
     public void ajusterLuminosite() {
         if (!verifierImage())
             return;
@@ -101,6 +107,10 @@ public class ControleurImage {
         }
     }
 
+    /**
+     * Affiche un dialogue permettant d'ajuster le contraste de l'image.
+     * Facteurs typiques : 0.5 (réduit), 1.0 (normal), 2.0 (augmenté).
+     */
     public void ajusterContraste() {
         if (!verifierImage())
             return;
@@ -116,6 +126,11 @@ public class ControleurImage {
         modele.mettreAJourImagePrincipale(resultat);
     }
 
+    /**
+     * Affiche un dialogue permettant de décaler la teinte de l'image.
+     * L'utilisateur peut choisir un décalage entre 0 et 360 degrés sur le cercle
+     * chromatique.
+     */
     public void decalerTeinte() {
         if (!verifierImage())
             return;
@@ -135,6 +150,9 @@ public class ControleurImage {
         }
     }
 
+    /**
+     * Convertit l'image principale en niveaux de gris.
+     */
     public void convertirEnGris() {
         if (!verifierImage())
             return;
@@ -143,6 +161,9 @@ public class ControleurImage {
         modele.mettreAJourImagePrincipale(resultat);
     }
 
+    /**
+     * Applique un effet négatif (inversion des couleurs) à l'image principale.
+     */
     public void appliquerNegatif() {
         if (!verifierImage())
             return;
@@ -151,10 +172,6 @@ public class ControleurImage {
         modele.mettreAJourImagePrincipale(resultat);
     }
 
-    // ========================================================================
-    // POSITIONNEMENT
-    // ========================================================================
-
     /**
      * Permet de définir la position de l'Image 2 pour la fusion.
      */
@@ -162,7 +179,6 @@ public class ControleurImage {
         if (!verifierDeuxImages())
             return;
 
-        // Créer un panneau personnalisé avec les champs
         JPanel panneau = new JPanel(new GridLayout(3, 2, 10, 10));
 
         JLabel labelX = new JLabel("Position X :");
@@ -197,7 +213,6 @@ public class ControleurImage {
                 positionY = Integer.parseInt(champY.getText());
                 vue.mettreAJourStatut("Position Image 2 : (" + positionX + ", " + positionY + ")");
 
-                // Afficher un aperçu
                 afficherApercu();
             } catch (NumberFormatException e) {
                 vue.afficherErreur("Veuillez entrer des nombres valides !");
@@ -217,10 +232,10 @@ public class ControleurImage {
         vue.mettreAJourStatut("Aperçu affiché - Position : (" + positionX + ", " + positionY + ")");
     }
 
-    // ========================================================================
-    // FUSION
-    // ========================================================================
-
+    /**
+     * Superpose l'image secondaire sur l'image principale à la position définie.
+     * Utilise une superposition simple sans gestion de la transparence.
+     */
     public void superposerImages() {
         if (!verifierDeuxImages())
             return;
@@ -231,6 +246,11 @@ public class ControleurImage {
         modele.mettreAJourImagePrincipale(resultat);
     }
 
+    /**
+     * Superpose l'image secondaire sur l'image principale avec gestion de la
+     * transparence.
+     * Respecte le canal alpha de l'image secondaire.
+     */
     public void superposerAvecAlpha() {
         if (!verifierDeuxImages())
             return;
@@ -241,6 +261,12 @@ public class ControleurImage {
         modele.mettreAJourImagePrincipale(resultat);
     }
 
+    /**
+     * Superpose l'image secondaire en utilisant une clé de transparence (chroma
+     * key).
+     * Affiche un dialogue pour choisir la couleur à rendre transparente et la
+     * tolérance.
+     */
     public void superposerChromaKey() {
         if (!verifierDeuxImages())
             return;
@@ -265,6 +291,10 @@ public class ControleurImage {
         modele.mettreAJourImagePrincipale(resultat);
     }
 
+    /**
+     * Fusionne les deux images selon un ratio défini par l'utilisateur.
+     * Un ratio de 0.5 donne un mélange 50/50 des deux images.
+     */
     public void fusionnerImages() {
         if (!verifierDeuxImages())
             return;
@@ -282,10 +312,13 @@ public class ControleurImage {
         modele.mettreAJourImagePrincipale(resultat);
     }
 
-    // ========================================================================
-    // POT DE PEINTURE
-    // ========================================================================
-
+    /**
+     * Applique l'outil pot de peinture aux coordonnées spécifiées.
+     * Remplit une zone de couleur similaire avec la couleur sélectionnée.
+     * 
+     * @param x Coordonnée X du point de départ
+     * @param y Coordonnée Y du point de départ
+     */
     public void appliquerPotPeinture(int x, int y) {
         if (!verifierImage())
             return;
@@ -298,6 +331,9 @@ public class ControleurImage {
         modele.mettreAJourImagePrincipale(resultat);
     }
 
+    /**
+     * Affiche un dialogue pour choisir la couleur du pot de peinture.
+     */
     public void choisirCouleurPeinture() {
         Color nouvelle = JColorChooser.showDialog(vue, "Couleur du pot", couleurPeinture);
         if (nouvelle != null) {
@@ -307,6 +343,10 @@ public class ControleurImage {
         }
     }
 
+    /**
+     * Affiche un dialogue pour définir la tolérance du pot de peinture.
+     * Plus la tolérance est élevée, plus la zone de remplissage sera large.
+     */
     public void definirTolerance() {
         String tolStr = JOptionPane.showInputDialog(vue,
                 "Tolérance (0 = exact, 50 = similaire, 100 = large) :",
@@ -316,15 +356,14 @@ public class ControleurImage {
         }
     }
 
-    // ========================================================================
-    // TEXTE
-    // ========================================================================
-
+    /**
+     * Affiche un dialogue pour ajouter du texte simple à l'image.
+     * L'utilisateur peut choisir le texte, la position et la couleur.
+     */
     public void ajouterTexteSimple() {
         if (!verifierImage())
             return;
 
-        // Panneau avec texte et position
         JPanel panneau = new JPanel(new GridLayout(3, 2, 10, 10));
 
         JLabel labelTexte = new JLabel("Texte :");
@@ -375,11 +414,15 @@ public class ControleurImage {
         vue.mettreAJourStatut("Texte ajoute a la position (" + x + ", " + y + ")");
     }
 
+    /**
+     * Affiche un dialogue pour ajouter du texte avec un fond coloré à l'image.
+     * L'utilisateur peut choisir le texte, la position, la couleur du texte et la
+     * couleur du fond.
+     */
     public void ajouterTexteAvecFond() {
         if (!verifierImage())
             return;
 
-        // Panneau avec texte et position
         JPanel panneau = new JPanel(new GridLayout(3, 2, 10, 10));
 
         JLabel labelTexte = new JLabel("Texte :");
@@ -435,11 +478,16 @@ public class ControleurImage {
         vue.mettreAJourStatut("Texte avec fond ajoute a la position (" + x + ", " + y + ")");
     }
 
+    /**
+     * Affiche un dialogue pour ajouter du texte coloré avec les pixels de l'image
+     * 2.
+     * L'utilisateur peut choisir le texte et la position. La couleur est extraite
+     * de l'image secondaire.
+     */
     public void ajouterTexteCouleurImage() {
         if (!verifierDeuxImages())
             return;
 
-        // Panneau avec texte et position
         JPanel panneau = new JPanel(new GridLayout(3, 2, 10, 10));
 
         JLabel labelTexte = new JLabel("Texte :");
@@ -488,10 +536,11 @@ public class ControleurImage {
         vue.mettreAJourStatut("Texte colore ajoute a la position (" + x + ", " + y + ")");
     }
 
-    // ========================================================================
-    // UTILITAIRES
-    // ========================================================================
-
+    /**
+     * Vérifie qu'une image principale est chargée.
+     * 
+     * @return true si une image est chargée, false sinon
+     */
     private boolean verifierImage() {
         if (!modele.possedeImagePrincipale()) {
             vue.afficherErreur("Veuillez d'abord charger une image !");
@@ -500,6 +549,11 @@ public class ControleurImage {
         return true;
     }
 
+    /**
+     * Vérifie que les deux images (principale et secondaire) sont chargées.
+     * 
+     * @return true si les deux images sont chargées, false sinon
+     */
     private boolean verifierDeuxImages() {
         if (!modele.possedeImagePrincipale()) {
             vue.afficherErreur("Veuillez d'abord charger une image principale !");
@@ -512,7 +566,12 @@ public class ControleurImage {
         return true;
     }
 
-    // Getters/Setters
+    /**
+     * Définit la position pour la superposition de l'image secondaire.
+     * 
+     * @param x Coordonnée X de la position
+     * @param y Coordonnée Y de la position
+     */
     public void definirPosition(int x, int y) {
         this.positionX = x;
         this.positionY = y;
