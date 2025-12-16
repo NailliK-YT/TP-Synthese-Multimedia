@@ -105,14 +105,25 @@ public class ControleurImage {
             return;
 
         String facteurStr = JOptionPane.showInputDialog(vue,
-                "Facteur de contraste (0.5 = réduit, 1.0 = normal, 2.0 = augmenté) :", "1.0");
+                "Facteur de contraste (0.5 = réduit, 1.0 = normal, 2.0 = augmenté) :",
+                ConfigurationDefaut.FACTEUR_CONTRASTE_DEFAUT);
         if (facteurStr == null)
             return;
 
-        double facteur = Double.parseDouble(facteurStr);
-        BufferedImage resultat = TraitementTransformation.ajusterContraste(
-                modele.obtenirImagePrincipale(), facteur);
-        modele.mettreAJourImagePrincipale(resultat);
+        try {
+            double facteur = Double.parseDouble(facteurStr);
+
+            if (facteur <= 0) {
+                vue.afficherErreur("Le facteur doit être positif !");
+                return;
+            }
+
+            BufferedImage resultat = TraitementTransformation.ajusterContraste(
+                    modele.obtenirImagePrincipale(), facteur);
+            modele.mettreAJourImagePrincipale(resultat);
+        } catch (NumberFormatException e) {
+            vue.afficherErreur("'" + facteurStr + "' n'est pas un nombre valide !");
+        }
     }
 
     /**
@@ -290,7 +301,7 @@ public class ControleurImage {
 
         String largeurStr = JOptionPane.showInputDialog(vue,
                 "Largeur de la zone de fondu (en pixels, 0 = pas de fondu) :",
-                "30");
+                String.valueOf(ConfigurationDefaut.LARGEUR_FONDU_DEFAUT));
         if (largeurStr == null)
             return;
 
@@ -299,6 +310,15 @@ public class ControleurImage {
 
             if (largeurFondu < 0) {
                 vue.afficherErreur("La largeur doit être positive !");
+                return;
+            }
+
+            int largeur1 = modele.obtenirImagePrincipale().getWidth();
+            int largeur2 = modele.obtenirImageSecondaire().getWidth();
+            int largeurMax = Math.min(largeur1, largeur2);
+
+            if (largeurFondu > largeurMax) {
+                vue.afficherErreur("Largeur trop grande ! Maximum : " + largeurMax + " pixels");
                 return;
             }
 
@@ -352,8 +372,21 @@ public class ControleurImage {
         String tolStr = JOptionPane.showInputDialog(vue,
                 "Tolérance (0 = exact, 50 = similaire, 100 = large) :",
                 String.valueOf(tolerancePeinture));
-        if (tolStr != null) {
-            tolerancePeinture = Double.parseDouble(tolStr);
+        if (tolStr == null)
+            return;
+
+        try {
+            double tolerance = Double.parseDouble(tolStr);
+
+            if (tolerance < 0 || tolerance > 255) {
+                vue.afficherErreur("La tolérance doit être entre 0 et 255 !");
+                return;
+            }
+
+            tolerancePeinture = tolerance;
+            vue.mettreAJourStatut("Tolérance du pot : " + (int) tolerance);
+        } catch (NumberFormatException e) {
+            vue.afficherErreur("Veuillez entrer un nombre valide !");
         }
     }
 
@@ -368,13 +401,13 @@ public class ControleurImage {
         JPanel panneau = new JPanel(new GridLayout(3, 2, 10, 10));
 
         JLabel labelTexte = new JLabel("Texte :");
-        JTextField champTexte = new JTextField("Hello World", 20);
+        JTextField champTexte = new JTextField(ConfigurationDefaut.TEXTE_DEFAUT, 20);
 
         JLabel labelX = new JLabel("Position X :");
-        JTextField champX = new JTextField("50", 10);
+        JTextField champX = new JTextField(ConfigurationDefaut.POSITION_X_DEFAUT, 10);
 
         JLabel labelY = new JLabel("Position Y :");
-        JTextField champY = new JTextField("50", 10);
+        JTextField champY = new JTextField(ConfigurationDefaut.POSITION_Y_DEFAUT, 10);
 
         panneau.add(labelTexte);
         panneau.add(champTexte);
@@ -405,12 +438,21 @@ public class ControleurImage {
             return;
         }
 
+        int largeurImage = modele.obtenirImagePrincipale().getWidth();
+        int hauteurImage = modele.obtenirImagePrincipale().getHeight();
+
+        if (x < 0 || x >= largeurImage || y < 0 || y >= hauteurImage) {
+            vue.afficherErreur(
+                    "Position hors de l'image ! (0-" + (largeurImage - 1) + ", 0-" + (hauteurImage - 1) + ")");
+            return;
+        }
+
         Color couleur = JColorChooser.showDialog(vue, "Couleur du texte", Color.BLACK);
         if (couleur == null)
             couleur = Color.BLACK;
 
         BufferedImage resultatImage = TraitementTexte.dessinerTexte(
-                modele.obtenirImagePrincipale(), texte, x, y, couleur, 32);
+                modele.obtenirImagePrincipale(), texte, x, y, couleur, ConfigurationDefaut.TAILLE_POLICE_TEXTE);
         modele.mettreAJourImagePrincipale(resultatImage);
         vue.mettreAJourStatut("Texte ajoute a la position (" + x + ", " + y + ")");
     }
@@ -427,13 +469,13 @@ public class ControleurImage {
         JPanel panneau = new JPanel(new GridLayout(3, 2, 10, 10));
 
         JLabel labelTexte = new JLabel("Texte :");
-        JTextField champTexte = new JTextField("Hello World", 20);
+        JTextField champTexte = new JTextField(ConfigurationDefaut.TEXTE_DEFAUT, 20);
 
         JLabel labelX = new JLabel("Position X :");
-        JTextField champX = new JTextField("50", 10);
+        JTextField champX = new JTextField(ConfigurationDefaut.POSITION_X_DEFAUT, 10);
 
         JLabel labelY = new JLabel("Position Y :");
-        JTextField champY = new JTextField("50", 10);
+        JTextField champY = new JTextField(ConfigurationDefaut.POSITION_Y_DEFAUT, 10);
 
         panneau.add(labelTexte);
         panneau.add(champTexte);
@@ -464,6 +506,15 @@ public class ControleurImage {
             return;
         }
 
+        int largeurImage = modele.obtenirImagePrincipale().getWidth();
+        int hauteurImage = modele.obtenirImagePrincipale().getHeight();
+
+        if (x < 0 || x >= largeurImage || y < 0 || y >= hauteurImage) {
+            vue.afficherErreur(
+                    "Position hors de l'image ! (0-" + (largeurImage - 1) + ", 0-" + (hauteurImage - 1) + ")");
+            return;
+        }
+
         Color couleurTexte = JColorChooser.showDialog(vue, "Couleur du texte", Color.WHITE);
         if (couleurTexte == null)
             couleurTexte = Color.WHITE;
@@ -474,7 +525,8 @@ public class ControleurImage {
 
         BufferedImage resultatImage = TraitementTexte.dessinerTexteAvecFond(
                 modele.obtenirImagePrincipale(), texte, x, y,
-                couleurTexte, couleurFond, 32, 10);
+                couleurTexte, couleurFond, ConfigurationDefaut.TAILLE_POLICE_TEXTE,
+                ConfigurationDefaut.MARGE_FOND_TEXTE);
         modele.mettreAJourImagePrincipale(resultatImage);
         vue.mettreAJourStatut("Texte avec fond ajoute a la position (" + x + ", " + y + ")");
     }
@@ -492,13 +544,13 @@ public class ControleurImage {
         JPanel panneau = new JPanel(new GridLayout(3, 2, 10, 10));
 
         JLabel labelTexte = new JLabel("Texte :");
-        JTextField champTexte = new JTextField("Hello World", 20);
+        JTextField champTexte = new JTextField(ConfigurationDefaut.TEXTE_DEFAUT, 20);
 
         JLabel labelX = new JLabel("Position X :");
-        JTextField champX = new JTextField("50", 10);
+        JTextField champX = new JTextField(ConfigurationDefaut.POSITION_X_DEFAUT, 10);
 
         JLabel labelY = new JLabel("Position Y :");
-        JTextField champY = new JTextField("50", 10);
+        JTextField champY = new JTextField(ConfigurationDefaut.POSITION_Y_DEFAUT, 10);
 
         panneau.add(labelTexte);
         panneau.add(champTexte);
@@ -529,10 +581,19 @@ public class ControleurImage {
             return;
         }
 
+        int largeurImage = modele.obtenirImagePrincipale().getWidth();
+        int hauteurImage = modele.obtenirImagePrincipale().getHeight();
+
+        if (x < 0 || x >= largeurImage || y < 0 || y >= hauteurImage) {
+            vue.afficherErreur(
+                    "Position hors de l'image ! (0-" + (largeurImage - 1) + ", 0-" + (hauteurImage - 1) + ")");
+            return;
+        }
+
         BufferedImage resultatImage = TraitementTexte.dessinerTexteAvecCouleurImage(
                 modele.obtenirImagePrincipale(),
                 modele.obtenirImageSecondaire(),
-                texte, x, y, 32);
+                texte, x, y, ConfigurationDefaut.TAILLE_POLICE_TEXTE);
         modele.mettreAJourImagePrincipale(resultatImage);
         vue.mettreAJourStatut("Texte colore ajoute a la position (" + x + ", " + y + ")");
     }
