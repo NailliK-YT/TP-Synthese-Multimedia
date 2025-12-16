@@ -1,7 +1,7 @@
 package controleur;
 
 import modele.ModeleImage;
-import vue.VuePrincipale;
+import vue.FramePrincipal;
 
 /**
  * ============================================================================
@@ -31,7 +31,7 @@ public class ControleurPrincipal implements ModeleImage.EcouteurModele {
     private final ModeleImage modele;
 
     /** La vue (interface graphique) */
-    private final VuePrincipale vue;
+    private final FramePrincipal vue;
 
     /** Sous-contrôleur pour les opérations fichiers */
     private final ControleurFichier controleurFichier;
@@ -49,7 +49,7 @@ public class ControleurPrincipal implements ModeleImage.EcouteurModele {
      * @param modele Le modèle de données
      * @param vue    La vue principale
      */
-    public ControleurPrincipal(ModeleImage modele, VuePrincipale vue) {
+    public ControleurPrincipal(ModeleImage modele, FramePrincipal vue) {
         this.modele = modele;
         this.vue = vue;
 
@@ -120,7 +120,7 @@ public class ControleurPrincipal implements ModeleImage.EcouteurModele {
     /**
      * @return La vue principale
      */
-    public VuePrincipale obtenirVue() {
+    public FramePrincipal obtenirVue() {
         return vue;
     }
 

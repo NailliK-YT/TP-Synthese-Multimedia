@@ -1,6 +1,6 @@
 import controleur.ControleurPrincipal;
 import modele.ModeleImage;
-import vue.VuePrincipale;
+import vue.FramePrincipal;
 
 import javax.swing.SwingUtilities;
 
@@ -13,7 +13,7 @@ import javax.swing.SwingUtilities;
  * 
  * ARCHITECTURE MVC :
  * - Modèle (modele.ModeleImage) : Données de l'application
- * - Vue (vue.VuePrincipale) : Interface graphique
+ * - Vue (vue.FramePrincipal) : Interface graphique
  * - Contrôleur (controleur.ControleurPrincipal) : Logique de coordination
  * 
  * @author Équipe 6 - BUT 3 Informatique
@@ -41,7 +41,7 @@ public class ApplicationPrincipale {
             System.out.println("Modèle créé");
 
             // Création de la vue (interface graphique)
-            VuePrincipale vue = new VuePrincipale();
+            FramePrincipal vue = new FramePrincipal();
             System.out.println("Vue créée");
 
             // Création du contrôleur (logique)

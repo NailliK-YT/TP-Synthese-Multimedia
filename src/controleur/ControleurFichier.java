@@ -2,7 +2,7 @@ package controleur;
 
 import modele.ModeleImage;
 import modele.UtilitaireImage;
-import vue.VuePrincipale;
+import vue.FramePrincipal;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -30,13 +30,13 @@ public class ControleurFichier {
     // ========================================================================
 
     private final ModeleImage modele;
-    private final VuePrincipale vue;
+    private final FramePrincipal vue;
 
     // ========================================================================
     // CONSTRUCTEUR
     // ========================================================================
 
-    public ControleurFichier(ModeleImage modele, VuePrincipale vue) {
+    public ControleurFichier(ModeleImage modele, FramePrincipal vue) {
         this.modele = modele;
         this.vue = vue;
     }

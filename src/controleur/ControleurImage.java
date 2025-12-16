@@ -3,7 +3,7 @@ package controleur;
 import modele.ModeleImage;
 import modele.UtilitaireImage;
 import modele.traitement.*;
-import vue.VuePrincipale;
+import vue.FramePrincipal;
 
 import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
@@ -35,7 +35,7 @@ public class ControleurImage {
     // ========================================================================
 
     private final ModeleImage modele;
-    private final VuePrincipale vue;
+    private final FramePrincipal vue;
 
     // Paramètres du pot de peinture
     private Color couleurPeinture = Color.RED;
@@ -49,7 +49,7 @@ public class ControleurImage {
     // CONSTRUCTEUR
     // ========================================================================
 
-    public ControleurImage(ModeleImage modele, VuePrincipale vue) {
+    public ControleurImage(ModeleImage modele, FramePrincipal vue) {
         this.modele = modele;
         this.vue = vue;
     }
