@@ -38,21 +38,19 @@ public class ApplicationPrincipale {
 
             // Création du modèle (données)
             ModeleImage modele = new ModeleImage();
-            System.out.println("✓ Modèle créé");
+            System.out.println("Modèle créé");
 
             // Création de la vue (interface graphique)
             VuePrincipale vue = new VuePrincipale();
-            System.out.println("✓ Vue créée");
+            System.out.println("Vue créée");
 
             // Création du contrôleur (logique)
             ControleurPrincipal controleur = new ControleurPrincipal(modele, vue);
-            System.out.println("✓ Contrôleur créé");
+            System.out.println("Contrôleur créé");
 
             // Initialisation (liaison modèle-vue-contrôleur)
             controleur.initialiser();
-            System.out.println("✓ Application initialisée");
-            System.out.println();
-            System.out.println("L'application est prête à l'emploi !");
+            System.out.println("Application initialisée");
         });
     }
 }
