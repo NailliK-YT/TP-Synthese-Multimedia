@@ -56,8 +56,8 @@ public class ControleurImage {
     public void appliquerRotation90Droite() {
         if (!verifierImage())
             return;
-        BufferedImage resultat = TraitementTransformation.rotation90Horaire(
-                modele.obtenirImagePrincipale());
+        BufferedImage resultat = TraitementTransformation.rotation90(
+                modele.obtenirImagePrincipale(), 90);
         modele.mettreAJourImagePrincipale(resultat);
     }
 
@@ -67,19 +67,8 @@ public class ControleurImage {
     public void appliquerRotation90Gauche() {
         if (!verifierImage())
             return;
-        BufferedImage resultat = TraitementTransformation.rotation90AntiHoraire(
-                modele.obtenirImagePrincipale());
-        modele.mettreAJourImagePrincipale(resultat);
-    }
-
-    /**
-     * Applique une rotation de 180° à l'image principale.
-     */
-    public void appliquerRotation180() {
-        if (!verifierImage())
-            return;
-        BufferedImage resultat = TraitementTransformation.rotation180(
-                modele.obtenirImagePrincipale());
+        BufferedImage resultat = TraitementTransformation.rotation90(
+                modele.obtenirImagePrincipale(), -90);
         modele.mettreAJourImagePrincipale(resultat);
     }
 

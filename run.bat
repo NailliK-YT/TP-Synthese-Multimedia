@@ -28,10 +28,3 @@ REM Lancement de l'application
 echo Lancement de l'application...
 echo.
 java -cp bin ApplicationPrincipale
-
-REM Si l'application se termine, afficher un message
-echo.
-echo ==========================================
-echo   Application terminée
-echo ==========================================
-pause

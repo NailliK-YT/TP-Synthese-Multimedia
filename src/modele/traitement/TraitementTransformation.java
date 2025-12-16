@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
  * ============================================================================
  * 
  * Cette classe regroupe les transformations géométriques et colorimétriques :
- * - Rotation (90°, -90°, 180°)
+ * - Rotation (90°, -90°)
  * - Ajustement de luminosité
  * - Ajustement de contraste
  * - Modification de teinte (Hue)
@@ -19,94 +19,33 @@ import java.awt.image.BufferedImage;
 public class TraitementTransformation {
 
     /**
-     * Effectue une rotation de 90° dans le sens horaire.
-     * 
-     * PRINCIPE :
-     * Chaque pixel (x, y) de l'image originale devient le pixel (hauteur - 1 - y,
-     * x)
-     * dans l'image tournée.
-     * 
-     * ATTENTION : Les dimensions sont inversées (largeur ↔ hauteur)
+     * Effectue une rotation de 90° ou -90°.
      * 
      * @param image L'image à tourner
-     * @return L'image tournée de 90° vers la droite
+     * @param angle Angle de rotation (90 = horaire, -90 = anti-horaire)
+     * @return L'image tournée
      */
-    public static BufferedImage rotation90Horaire(BufferedImage image) {
+    public static BufferedImage rotation90(BufferedImage image, int angle) {
         int largeur = image.getWidth();
         int hauteur = image.getHeight();
-
         BufferedImage resultat = UtilitaireImage.creerImageVide(hauteur, largeur);
 
         for (int y = 0; y < hauteur; y++) {
             for (int x = 0; x < largeur; x++) {
                 int couleur = image.getRGB(x, y);
+                int nouveauX, nouveauY;
 
-                int nouveauX = hauteur - 1 - y;
-                int nouveauY = x;
-
-                resultat.setRGB(nouveauX, nouveauY, couleur);
-            }
-        }
-
-        return resultat;
-    }
-
-    /**
-     * Effectue une rotation de 90° dans le sens anti-horaire.
-     * 
-     * PRINCIPE :
-     * Chaque pixel (x, y) devient le pixel (y, largeur - 1 - x).
-     * 
-     * @param image L'image à tourner
-     * @return L'image tournée de 90° vers la gauche
-     */
-    public static BufferedImage rotation90AntiHoraire(BufferedImage image) {
-        int largeur = image.getWidth();
-        int hauteur = image.getHeight();
-
-        BufferedImage resultat = UtilitaireImage.creerImageVide(hauteur, largeur);
-
-        for (int y = 0; y < hauteur; y++) {
-            for (int x = 0; x < largeur; x++) {
-                int couleur = image.getRGB(x, y);
-
-                int nouveauX = y;
-                int nouveauY = largeur - 1 - x;
+                if (angle == 90) {
+                    nouveauX = hauteur - 1 - y;
+                    nouveauY = x;
+                } else {
+                    nouveauX = y;
+                    nouveauY = largeur - 1 - x;
+                }
 
                 resultat.setRGB(nouveauX, nouveauY, couleur);
             }
         }
-
-        return resultat;
-    }
-
-    /**
-     * Effectue une rotation de 180°.
-     * 
-     * PRINCIPE :
-     * Chaque pixel (x, y) devient le pixel (largeur - 1 - x, hauteur - 1 - y).
-     * C'est comme retourner l'image à l'envers.
-     * 
-     * @param image L'image à tourner
-     * @return L'image tournée de 180°
-     */
-    public static BufferedImage rotation180(BufferedImage image) {
-        int largeur = image.getWidth();
-        int hauteur = image.getHeight();
-
-        BufferedImage resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
-
-        for (int y = 0; y < hauteur; y++) {
-            for (int x = 0; x < largeur; x++) {
-                int couleur = image.getRGB(x, y);
-
-                int nouveauX = largeur - 1 - x;
-                int nouveauY = hauteur - 1 - y;
-
-                resultat.setRGB(nouveauX, nouveauY, couleur);
-            }
-        }
-
         return resultat;
     }
 
