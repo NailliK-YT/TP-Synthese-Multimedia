@@ -180,56 +180,74 @@ public class TraitementFusion {
     }
 
     /**
-     * Fusionne deux images avec un ratio donné.
+     * Juxtapose deux images horizontalement côte à côte avec une zone de fondu.
      * 
      * PRINCIPE :
-     * Chaque pixel du résultat est un mélange des deux images.
-     * Le ratio définit la proportion de chaque image.
+     * Crée une nouvelle image avec une zone de transition progressive entre les
+     * deux images.
+     * La zone de fondu mélange progressivement les pixels des deux images.
      * 
-     * @param image1      Première image
-     * @param image2      Deuxième image
-     * @param ratioImage1 Proportion de l'image 1 (0.0 à 1.0)
-     * @return L'image fusionnée
+     * ALGORITHME :
+     * 1. Image1 pure à gauche
+     * 2. Zone de fondu au centre (mélange progressif)
+     * 3. Image2 pure à droite
+     * 
+     * @param image1       Première image (à gauche)
+     * @param image2       Deuxième image (à droite)
+     * @param largeurFondu Largeur de la zone de transition (en pixels)
+     * @return L'image résultante avec fondu
      */
-    public static BufferedImage fusionner(BufferedImage image1, BufferedImage image2,
-            double ratioImage1) {
-        int largeur = Math.max(image1.getWidth(), image2.getWidth());
-        int hauteur = Math.max(image1.getHeight(), image2.getHeight());
+    public static BufferedImage juxtaposerHorizontalement(BufferedImage image1, BufferedImage image2,
+            int largeurFondu) {
+        int largeur1 = image1.getWidth();
+        int largeur2 = image2.getWidth();
+        int hauteur1 = image1.getHeight();
+        int hauteur2 = image2.getHeight();
 
-        BufferedImage resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
+        int largeurTotale = largeur1 + largeur2 - largeurFondu;
+        int hauteurMax = Math.max(hauteur1, hauteur2);
 
-        double ratioImage2 = 1.0 - ratioImage1;
+        BufferedImage resultat = UtilitaireImage.creerImageVide(largeurTotale, hauteurMax);
 
-        for (int y = 0; y < hauteur; y++) {
-            for (int x = 0; x < largeur; x++) {
-                int couleur1 = obtenirCouleur(image1, x, y);
-                int couleur2 = obtenirCouleur(image2, x, y);
+        for (int y = 0; y < hauteurMax; y++) {
+            for (int x = 0; x < largeurTotale; x++) {
+                int positionDansZoneFondu = x - (largeur1 - largeurFondu);
 
-                int[] comp1 = UtilitaireImage.extraireComposantes(couleur1);
-                int[] comp2 = UtilitaireImage.extraireComposantes(couleur2);
+                if (x < largeur1 - largeurFondu) {
+                    if (y < hauteur1) {
+                        int couleur = image1.getRGB(x, y);
+                        resultat.setRGB(x, y, couleur);
+                    }
+                } else if (positionDansZoneFondu >= 0 && positionDansZoneFondu < largeurFondu) {
+                    double ratio = (double) positionDansZoneFondu / largeurFondu;
 
-                int nouveauAlpha = (int) (comp1[0] * ratioImage1 + comp2[0] * ratioImage2);
-                int nouveauRouge = (int) (comp1[1] * ratioImage1 + comp2[1] * ratioImage2);
-                int nouveauVert = (int) (comp1[2] * ratioImage1 + comp2[2] * ratioImage2);
-                int nouveauBleu = (int) (comp1[3] * ratioImage1 + comp2[3] * ratioImage2);
+                    int x1 = largeur1 - largeurFondu + positionDansZoneFondu;
+                    int x2 = positionDansZoneFondu;
 
-                int nouvelleCouleur = UtilitaireImage.combinerComposantes(
-                        nouveauAlpha, nouveauRouge, nouveauVert, nouveauBleu);
-                resultat.setRGB(x, y, nouvelleCouleur);
+                    int couleur1 = (x1 < largeur1 && y < hauteur1) ? image1.getRGB(x1, y) : 0x00000000;
+                    int couleur2 = (x2 < largeur2 && y < hauteur2) ? image2.getRGB(x2, y) : 0x00000000;
+
+                    int[] comp1 = UtilitaireImage.extraireComposantes(couleur1);
+                    int[] comp2 = UtilitaireImage.extraireComposantes(couleur2);
+
+                    int alpha = (int) ((1 - ratio) * comp1[0] + ratio * comp2[0]);
+                    int rouge = (int) ((1 - ratio) * comp1[1] + ratio * comp2[1]);
+                    int vert = (int) ((1 - ratio) * comp1[2] + ratio * comp2[2]);
+                    int bleu = (int) ((1 - ratio) * comp1[3] + ratio * comp2[3]);
+
+                    int couleurMelangee = UtilitaireImage.combinerComposantes(alpha, rouge, vert, bleu);
+                    resultat.setRGB(x, y, couleurMelangee);
+                } else {
+                    int x2 = x - (largeur1 - largeurFondu);
+                    if (x2 < largeur2 && y < hauteur2) {
+                        int couleur = image2.getRGB(x2, y);
+                        resultat.setRGB(x, y, couleur);
+                    }
+                }
             }
         }
 
         return resultat;
-    }
-
-    /**
-     * Récupère la couleur d'un pixel, ou transparent si hors limites.
-     */
-    private static int obtenirCouleur(BufferedImage image, int x, int y) {
-        if (x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight()) {
-            return image.getRGB(x, y);
-        }
-        return 0x00000000;
     }
 
     /**

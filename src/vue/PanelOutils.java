@@ -110,7 +110,7 @@ public class PanelOutils extends JPanel {
             if (controleurImage != null)
                 controleurImage.superposerChromaKey();
         });
-        ajouterBouton(sectionFusion, "Melanger 50/50", e -> {
+        ajouterBouton(sectionFusion, "Juxtaposer", e -> {
             if (controleurImage != null)
                 controleurImage.fusionnerImages();
         });

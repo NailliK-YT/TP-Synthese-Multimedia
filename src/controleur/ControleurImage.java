@@ -292,24 +292,36 @@ public class ControleurImage {
     }
 
     /**
-     * Fusionne les deux images selon un ratio défini par l'utilisateur.
-     * Un ratio de 0.5 donne un mélange 50/50 des deux images.
+     * Juxtapose les deux images horizontalement côte à côte avec une zone de fondu.
+     * Demande à l'utilisateur la largeur de la zone de transition.
      */
     public void fusionnerImages() {
         if (!verifierDeuxImages())
             return;
 
-        String ratioStr = JOptionPane.showInputDialog(vue,
-                "Ratio de l'image principale (0.0 à 1.0) :", "0.5");
-        if (ratioStr == null)
+        String largeurStr = JOptionPane.showInputDialog(vue,
+                "Largeur de la zone de fondu (en pixels, 0 = pas de fondu) :",
+                "30");
+        if (largeurStr == null)
             return;
 
-        double ratio = Double.parseDouble(ratioStr);
-        BufferedImage resultat = TraitementFusion.fusionner(
-                modele.obtenirImagePrincipale(),
-                modele.obtenirImageSecondaire(),
-                ratio);
-        modele.mettreAJourImagePrincipale(resultat);
+        try {
+            int largeurFondu = Integer.parseInt(largeurStr);
+
+            if (largeurFondu < 0) {
+                vue.afficherErreur("La largeur doit être positive !");
+                return;
+            }
+
+            BufferedImage resultat = TraitementFusion.juxtaposerHorizontalement(
+                    modele.obtenirImagePrincipale(),
+                    modele.obtenirImageSecondaire(),
+                    largeurFondu);
+            modele.mettreAJourImagePrincipale(resultat);
+            vue.mettreAJourStatut("Images juxtaposées avec fondu de " + largeurFondu + " pixels");
+        } catch (NumberFormatException e) {
+            vue.afficherErreur("Veuillez entrer un nombre valide !");
+        }
     }
 
     /**

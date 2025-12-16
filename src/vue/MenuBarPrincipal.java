@@ -92,7 +92,7 @@ public class MenuBarPrincipal extends JMenuBar {
         JMenuItem itemChromaKey = new JMenuItem("Superposer avec chroma key");
         itemChromaKey.addActionListener(e -> controleurImage.superposerChromaKey());
 
-        JMenuItem itemFusionner = new JMenuItem("Fusionner 50/50");
+        JMenuItem itemFusionner = new JMenuItem("Juxtaposer avec fondu");
         itemFusionner.addActionListener(e -> controleurImage.fusionnerImages());
 
         menuFusion.add(itemSuperposer);
