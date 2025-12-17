@@ -23,119 +23,165 @@ import java.io.File;
  * 
  * @author Équipe 6 - BUT 3 Informatique
  */
-public class ControleurFichier {
+public class ControleurFichier 
+{
 
-    private final ModeleImage modele;
-    private final FramePrincipal vue;
+	private final ModeleImage    modele;
+	private final FramePrincipal vue;
 
-    public ControleurFichier(ModeleImage modele, FramePrincipal vue) {
-        this.modele = modele;
-        this.vue = vue;
-    }
+	public ControleurFichier(ModeleImage modele, FramePrincipal vue) 
+	{
+		this.modele = modele;
+		this.vue    = vue;
+	}
 
-    /**
-     * Ouvre une image principale via un dialogue de fichier.
-     */
-    public void ouvrirImagePrincipale() {
-        JFileChooser selecteur = new JFileChooser();
-        selecteur.setDialogTitle("Ouvrir une image principale");
-        selecteur.setFileFilter(new FileNameExtensionFilter("Images PNG", "png"));
+	/**
+	 * Ouvre une image principale via un dialogue de fichier.
+	 */
+	public void ouvrirImagePrincipale() 
+	{
+		JFileChooser  selecteur;
+		int           resultat;
 
-        int resultat = selecteur.showOpenDialog(vue);
+		File          fichier;
+		BufferedImage image;
 
-        if (resultat == JFileChooser.APPROVE_OPTION) {
-            File fichier = selecteur.getSelectedFile();
-            BufferedImage image = UtilitaireImage.ouvrirImage(fichier.getAbsolutePath());
+		
+		selecteur = new JFileChooser();
+		selecteur.setDialogTitle("Ouvrir une image principale");
+		selecteur.setFileFilter (new FileNameExtensionFilter("Images PNG", "png"));
 
-            if (image != null) {
-                modele.definirImagePrincipale(image);
-                vue.mettreAJourStatut("Image chargée : " + fichier.getName());
-            } else {
-                vue.afficherErreur("Impossible de charger l'image !");
-            }
-        }
-    }
+		resultat = selecteur.showOpenDialog(this.vue);
 
-    /**
-     * Ouvre une image secondaire pour les opérations de fusion.
-     */
-    public void ouvrirImageSecondaire() {
-        JFileChooser selecteur = new JFileChooser();
-        selecteur.setDialogTitle("Ouvrir une image secondaire");
-        selecteur.setFileFilter(new FileNameExtensionFilter("Images PNG", "png"));
+		if (resultat == JFileChooser.APPROVE_OPTION) 
+		{
+			fichier = selecteur.getSelectedFile();
+			image   = UtilitaireImage.ouvrirImage(fichier.getAbsolutePath());
 
-        int resultat = selecteur.showOpenDialog(vue);
+			if (image != null) 
+			{
+				this.modele.definirImagePrincipale(image);
+				this.vue.mettreAJourStatut("Image chargée : " + fichier.getName());
+			} 
+			else 
+			{
+				this.vue.afficherErreur("Impossible de charger l'image !");
+			}
+		}
+	}
 
-        if (resultat == JFileChooser.APPROVE_OPTION) {
-            File fichier = selecteur.getSelectedFile();
-            BufferedImage image = UtilitaireImage.ouvrirImage(fichier.getAbsolutePath());
+	/**
+	 * Ouvre une image secondaire pour les opérations de fusion.
+	 */
+	public void ouvrirImageSecondaire() 
+	{
+		JFileChooser  selecteur;
+		int           resultat;
 
-            if (image != null) {
-                modele.definirImageSecondaire(image);
-                vue.mettreAJourStatut("Image secondaire chargée : " +
-                        image.getWidth() + "x" + image.getHeight());
-            } else {
-                vue.afficherErreur("Impossible de charger l'image secondaire !");
-            }
-        }
-    }
+		File          fichier;
+		BufferedImage image;
 
-    /**
-     * Sauvegarde l'image actuelle.
-     */
-    public void sauvegarderImage() {
-        if (!modele.possedeImagePrincipale()) {
-            vue.afficherErreur("Aucune image à sauvegarder !");
-            return;
-        }
+		selecteur = new JFileChooser();
+		selecteur.setDialogTitle("Ouvrir une image secondaire");
+		selecteur.setFileFilter(new FileNameExtensionFilter("Images PNG", "png"));
 
-        JFileChooser selecteur = new JFileChooser();
-        selecteur.setDialogTitle("Sauvegarder l'image");
-        selecteur.setFileFilter(new FileNameExtensionFilter("Images PNG", "png"));
+		resultat = selecteur.showOpenDialog(vue);
 
-        int resultat = selecteur.showSaveDialog(vue);
+		if (resultat == JFileChooser.APPROVE_OPTION) 
+		{
+			fichier = selecteur.getSelectedFile();
+			image = UtilitaireImage.ouvrirImage(fichier.getAbsolutePath());
 
-        if (resultat == JFileChooser.APPROVE_OPTION) {
-            String chemin = selecteur.getSelectedFile().getAbsolutePath();
+			if (image != null) 
+			{
+				this.modele.definirImageSecondaire(image);
+				this.vue.mettreAJourStatut(
+					"Image secondaire chargée : "
+					+ image.getWidth() 
+					+ "x" 
+					+ image.getHeight()
+				);
+			} 
+			else 
+			{
+				this.vue.afficherErreur("Impossible de charger l'image secondaire");
+			}
+		}
+	}
 
-            if (!chemin.toLowerCase().endsWith(".png")) {
-                chemin += ".png";
-            }
+	/**
+	 * Sauvegarde l'image actuelle.
+	 */
+	public void sauvegarderImage() 
+	{
+		JFileChooser selecteur;
+		int          resultat;
+		String       chemin;
 
-            if (UtilitaireImage.sauvegarderImage(modele.obtenirImagePrincipale(), chemin)) {
-                vue.mettreAJourStatut("Image sauvegardée : " + chemin);
-                JOptionPane.showMessageDialog(vue, "Image sauvegardée avec succès !");
-            } else {
-                vue.afficherErreur("Erreur lors de la sauvegarde !");
-            }
-        }
-    }
+		if (!this.modele.possedeImagePrincipale()) 
+		{
+			this.vue.afficherErreur("Aucune image à sauvegarder");
+			return;
+		}
 
-    /**
-     * Restaure l'image originale.
-     */
-    public void restaurerOriginale() {
-        if (!modele.peutRestaurer()) {
-            vue.afficherErreur("Aucune image originale à restaurer !");
-            return;
-        }
+		selecteur = new JFileChooser();
+		selecteur.setDialogTitle("Sauvegarder l'image");
+		selecteur.setFileFilter(new FileNameExtensionFilter("Images PNG", "png"));
 
-        modele.restaurerImageOriginale();
-        vue.mettreAJourStatut("Image originale restaurée");
-    }
+		resultat = selecteur.showSaveDialog(vue);
 
-    /**
-     * Quitte l'application.
-     */
-    public void quitter() {
-        int choix = JOptionPane.showConfirmDialog(
-                vue,
-                "Voulez-vous vraiment quitter ?",
-                "Quitter",
-                JOptionPane.YES_NO_OPTION);
+		if (resultat == JFileChooser.APPROVE_OPTION) 
+		{
+			chemin = selecteur.getSelectedFile().getAbsolutePath();
 
-        if (choix == JOptionPane.YES_OPTION) {
-            System.exit(0);
-        }
-    }
+			if (!chemin.toLowerCase().endsWith(".png")) 
+			{
+				chemin += ".png";
+			}
+
+			if (UtilitaireImage.sauvegarderImage(this.modele.getImagePrincipale(), chemin)) 
+			{
+				this.vue.mettreAJourStatut("Image sauvegardée : " + chemin);
+				JOptionPane.showMessageDialog(this.vue, "Image sauvegardée avec succès");
+			}
+			else 
+			{
+				this.vue.afficherErreur("Erreur lors de la sauvegarde");
+			}
+		}
+	}
+
+	/**
+	 * Restaure l'image originale.
+	 */
+	public void restaurerOriginale() 
+	{
+		if (!this.modele.peutRestaurer()) 
+		{
+			this.vue.afficherErreur("Aucune image originale à restaurer !");
+			return;
+		}
+
+		this.modele.restaurerImageOriginale();
+		this.vue.mettreAJourStatut("Image originale restaurée");
+	}
+
+	/**
+	 * Quitte l'application.
+	 */
+	public void quitter() {
+		int choix;
+
+		choix = JOptionPane.showConfirmDialog(
+			this.vue,
+			"Voulez-vous vraiment quitter ?",
+			"Quitter",
+			JOptionPane.YES_NO_OPTION
+		);
+
+		if (choix == JOptionPane.YES_OPTION)
+		{
+			System.exit(0);
+		}
+	}
 }

@@ -22,227 +22,283 @@ import java.awt.image.BufferedImage;
  * 
  * @author Équipe 6 - BUT 3 Informatique
  */
-public class TraitementTexte {
+public class TraitementTexte
+{
+	/**
+	 * Dessine du texte sur une image à une position donnée.
+	 * 
+	 * PRINCIPE :
+	 * 1. Obtenir le contexte Graphics2D de l'image
+	 * 2. Configurer la police et la couleur
+	 * 3. Dessiner le texte avec drawString()
+	 * 
+	 * @param image        L'image sur laquelle dessiner (sera modifiée)
+	 * @param texte        Le texte à dessiner
+	 * @param x            Position X du texte
+	 * @param y            Position Y du texte (ligne de base)
+	 * @param couleur      Couleur du texte
+	 * @param taillePolice Taille de la police
+	 * @return L'image avec le texte
+	 */
+	public static BufferedImage dessinerTexte(
+		BufferedImage image, String texte,
+		int x, int y, 
+		Color couleur, int taillePolice
+	) {
+		BufferedImage resultat;
+		Graphics2D    g2d;
+		Font          police;
 
-    /**
-     * Dessine du texte sur une image à une position donnée.
-     * 
-     * PRINCIPE :
-     * 1. Obtenir le contexte Graphics2D de l'image
-     * 2. Configurer la police et la couleur
-     * 3. Dessiner le texte avec drawString()
-     * 
-     * @param image        L'image sur laquelle dessiner (sera modifiée)
-     * @param texte        Le texte à dessiner
-     * @param x            Position X du texte
-     * @param y            Position Y du texte (ligne de base)
-     * @param couleur      Couleur du texte
-     * @param taillePolice Taille de la police
-     * @return L'image avec le texte
-     */
-    public static BufferedImage dessinerTexte(BufferedImage image, String texte,
-            int x, int y, Color couleur, int taillePolice) {
-        BufferedImage resultat = UtilitaireImage.copierImage(image);
+		resultat = UtilitaireImage.copierImage(image);
 
-        Graphics2D g2d = resultat.createGraphics();
+		g2d = resultat.createGraphics();
 
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g2d.setRenderingHint(
+			RenderingHints.KEY_TEXT_ANTIALIASING,
+			RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+		);
 
-        Font police = new Font("SansSerif", Font.BOLD, taillePolice);
-        g2d.setFont(police);
+		police = new Font("SansSerif", Font.BOLD, taillePolice);
+		
+		g2d.setFont   (police);
+		g2d.setColor  (couleur);
+		g2d.drawString(texte, x, y);
+		g2d.dispose   ();
 
-        g2d.setColor(couleur);
+		return resultat;
+	}
 
-        g2d.drawString(texte, x, y);
+	/**
+	 * Dessine du texte avec un rectangle de fond derrière.
+	 * 
+	 * ALGORITHME :
+	 * 1. Calculer les dimensions du texte avec FontMetrics
+	 * 2. Dessiner un rectangle de fond (avec marge)
+	 * 3. Dessiner le texte par-dessus
+	 * 
+	 * @param image        L'image sur laquelle dessiner
+	 * @param texte        Le texte à dessiner
+	 * @param x            Position X
+	 * @param y            Position Y
+	 * @param couleurTexte Couleur du texte
+	 * @param couleurFond  Couleur du fond
+	 * @param taillePolice Taille de la police
+	 * @param marge        Marge autour du texte (en pixels)
+	 * @return L'image avec le texte et son fond
+	 */
+	public static BufferedImage dessinerTexteAvecFond(
+		BufferedImage image, String texte,
+		int x, int y,
+		Color couleurTexte, Color couleurFond,
+		int taillePolice, int marge
+	) {
+		BufferedImage resultat;
+		Graphics2D    g2d;
+		Font          police;
+		FontMetrics   metrics;
+		int           largeurTexte, hauteurTexte, ascent;
+		int           rectX, rectY, rectLargeur, rectHauteur;
 
-        g2d.dispose();
+		resultat = UtilitaireImage.copierImage(image);
+		
+		g2d = resultat.createGraphics();
 
-        return resultat;
-    }
+		g2d.setRenderingHint(
+			RenderingHints.KEY_TEXT_ANTIALIASING,
+			RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+		);
 
-    /**
-     * Dessine du texte avec un rectangle de fond derrière.
-     * 
-     * ALGORITHME :
-     * 1. Calculer les dimensions du texte avec FontMetrics
-     * 2. Dessiner un rectangle de fond (avec marge)
-     * 3. Dessiner le texte par-dessus
-     * 
-     * @param image        L'image sur laquelle dessiner
-     * @param texte        Le texte à dessiner
-     * @param x            Position X
-     * @param y            Position Y
-     * @param couleurTexte Couleur du texte
-     * @param couleurFond  Couleur du fond
-     * @param taillePolice Taille de la police
-     * @param marge        Marge autour du texte (en pixels)
-     * @return L'image avec le texte et son fond
-     */
-    public static BufferedImage dessinerTexteAvecFond(BufferedImage image, String texte,
-            int x, int y,
-            Color couleurTexte, Color couleurFond,
-            int taillePolice, int marge) {
-        BufferedImage resultat = UtilitaireImage.copierImage(image);
-        Graphics2D g2d = resultat.createGraphics();
+		police = new Font("SansSerif", Font.BOLD, taillePolice);
+		g2d.setFont(police);
 
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		metrics = g2d.getFontMetrics();
 
-        Font police = new Font("SansSerif", Font.BOLD, taillePolice);
-        g2d.setFont(police);
+		largeurTexte = metrics.stringWidth(texte);
+		hauteurTexte = metrics.getHeight();
+		ascent = metrics.getAscent();
 
-        FontMetrics metrics = g2d.getFontMetrics();
+		rectX = x - marge;
+		rectY = y - ascent - marge;
+		rectLargeur = largeurTexte + 2 * marge;
+		rectHauteur = hauteurTexte + 2 * marge;
 
-        int largeurTexte = metrics.stringWidth(texte);
-        int hauteurTexte = metrics.getHeight();
-        int ascent = metrics.getAscent();
+		g2d.setColor(couleurFond);
+		g2d.fillRect(rectX, rectY, rectLargeur, rectHauteur);
+		g2d.setColor(couleurTexte);
+		g2d.drawString(texte, x, y);
+		g2d.dispose();
 
-        int rectX = x - marge;
-        int rectY = y - ascent - marge;
-        int rectLargeur = largeurTexte + 2 * marge;
-        int rectHauteur = hauteurTexte + 2 * marge;
+		return resultat;
+	}
 
-        g2d.setColor(couleurFond);
-        g2d.fillRect(rectX, rectY, rectLargeur, rectHauteur);
+	/**
+	 * Dessine du texte dont la couleur est extraite d'une image de référence.
+	 * 
+	 * PRINCIPE :
+	 * Pour chaque pixel du texte, on prend la couleur correspondante
+	 * dans l'image de référence (comme un masque).
+	 * 
+	 * ALGORITHME :
+	 * 1. Créer une image temporaire avec le texte en blanc sur fond transparent
+	 * 2. Pour chaque pixel blanc, récupérer la couleur de l'image source
+	 * 3. Appliquer cette couleur au pixel
+	 * 
+	 * @param imageDestination L'image sur laquelle dessiner
+	 * @param imageCouleurs    L'image source des couleurs
+	 * @param texte            Le texte à dessiner
+	 * @param x                Position X
+	 * @param y                Position Y
+	 * @param taillePolice     Taille de la police
+	 * @return L'image avec le texte coloré
+	 */
+	public static BufferedImage dessinerTexteAvecCouleurImage(
+		BufferedImage imageDestination, BufferedImage imageCouleurs,
+		String texte, int x, int y, int taillePolice
+	) {
+		BufferedImage resultat, masque;
+		Graphics2D    gMasque;
+		Font          police;
 
-        g2d.setColor(couleurTexte);
-        g2d.drawString(texte, x, y);
+		int   couleurMasque, srcX, srcY, couleurSource, nouvelleCouleur;
+		int[] compMasque, compSource;
 
-        g2d.dispose();
-        return resultat;
-    }
+		resultat = UtilitaireImage.copierImage(imageDestination);
+		masque   = UtilitaireImage.creerImageVide(
+			resultat.getWidth (), 
+			resultat.getHeight()
+		);
 
-    /**
-     * Dessine du texte dont la couleur est extraite d'une image de référence.
-     * 
-     * PRINCIPE :
-     * Pour chaque pixel du texte, on prend la couleur correspondante
-     * dans l'image de référence (comme un masque).
-     * 
-     * ALGORITHME :
-     * 1. Créer une image temporaire avec le texte en blanc sur fond transparent
-     * 2. Pour chaque pixel blanc, récupérer la couleur de l'image source
-     * 3. Appliquer cette couleur au pixel
-     * 
-     * @param imageDestination L'image sur laquelle dessiner
-     * @param imageCouleurs    L'image source des couleurs
-     * @param texte            Le texte à dessiner
-     * @param x                Position X
-     * @param y                Position Y
-     * @param taillePolice     Taille de la police
-     * @return L'image avec le texte coloré
-     */
-    public static BufferedImage dessinerTexteAvecCouleurImage(
-            BufferedImage imageDestination, BufferedImage imageCouleurs,
-            String texte, int x, int y, int taillePolice) {
+		gMasque = masque.createGraphics();
+		gMasque.setRenderingHint(
+			RenderingHints.KEY_TEXT_ANTIALIASING,
+			RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+		);
 
-        BufferedImage resultat = UtilitaireImage.copierImage(imageDestination);
+		police = new Font("SansSerif", Font.BOLD, taillePolice);
 
-        BufferedImage masque = UtilitaireImage.creerImageVide(
-                resultat.getWidth(), resultat.getHeight());
+		gMasque.setFont(police);
+		gMasque.setColor(Color.WHITE);
+		gMasque.drawString(texte, x, y);
+		gMasque.dispose();
 
-        Graphics2D gMasque = masque.createGraphics();
-        gMasque.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		for (int py = 0; py < masque.getHeight(); py++) 
+		{
+			for (int px = 0; px < masque.getWidth(); px++) 
+			{
+				couleurMasque = masque.getRGB(px, py);
+				compMasque = UtilitaireImage.extraireComposantes(couleurMasque);
 
-        Font police = new Font("SansSerif", Font.BOLD, taillePolice);
-        gMasque.setFont(police);
-        gMasque.setColor(Color.WHITE);
-        gMasque.drawString(texte, x, y);
-        gMasque.dispose();
+				if (compMasque[1] > 128) 
+				{
+					srcX = px % imageCouleurs.getWidth();
+					srcY = py % imageCouleurs.getHeight();
 
-        for (int py = 0; py < masque.getHeight(); py++) {
-            for (int px = 0; px < masque.getWidth(); px++) {
-                int couleurMasque = masque.getRGB(px, py);
-                int[] compMasque = UtilitaireImage.extraireComposantes(couleurMasque);
+					couleurSource = imageCouleurs.getRGB(srcX, srcY);
 
-                if (compMasque[1] > 128) {
-                    int srcX = px % imageCouleurs.getWidth();
-                    int srcY = py % imageCouleurs.getHeight();
-                    int couleurSource = imageCouleurs.getRGB(srcX, srcY);
+					compSource = UtilitaireImage.extraireComposantes(couleurSource);
+					
+					nouvelleCouleur = UtilitaireImage.combinerComposantes(
+						compMasque[0],
+						compSource[1],
+						compSource[2], 
+						compSource[3]
+					);
 
-                    int[] compSource = UtilitaireImage.extraireComposantes(couleurSource);
-                    int nouvelleCouleur = UtilitaireImage.combinerComposantes(
-                            compMasque[0],
-                            compSource[1], compSource[2], compSource[3]);
+					resultat.setRGB(px, py, nouvelleCouleur);
+				}
+			}
+		}
 
-                    resultat.setRGB(px, py, nouvelleCouleur);
-                }
-            }
-        }
+		return resultat;
+	}
 
-        return resultat;
-    }
+	/**
+	 * Dessine du texte avec un fond, la couleur du texte venant d'une image.
+	 * 
+	 * Combine les deux fonctionnalités précédentes.
+	 * 
+	 * @param imageDestination L'image de destination
+	 * @param imageCouleurs    L'image source des couleurs du texte
+	 * @param texte            Le texte à dessiner
+	 * @param x                Position X
+	 * @param y                Position Y
+	 * @param couleurFond      Couleur du fond
+	 * @param taillePolice     Taille de la police
+	 * @param marge            Marge autour du texte
+	 * @return L'image avec le texte coloré et son fond
+	 */
+	public static BufferedImage dessinerTexteComplet(
+		BufferedImage imageDestination, BufferedImage imageCouleurs,
+		String texte, int x, int y,
+		Color couleurFond, int taillePolice, int marge
+	) {
 
-    /**
-     * Dessine du texte avec un fond, la couleur du texte venant d'une image.
-     * 
-     * Combine les deux fonctionnalités précédentes.
-     * 
-     * @param imageDestination L'image de destination
-     * @param imageCouleurs    L'image source des couleurs du texte
-     * @param texte            Le texte à dessiner
-     * @param x                Position X
-     * @param y                Position Y
-     * @param couleurFond      Couleur du fond
-     * @param taillePolice     Taille de la police
-     * @param marge            Marge autour du texte
-     * @return L'image avec le texte coloré et son fond
-     */
-    public static BufferedImage dessinerTexteComplet(
-            BufferedImage imageDestination, BufferedImage imageCouleurs,
-            String texte, int x, int y,
-            Color couleurFond, int taillePolice, int marge) {
+		BufferedImage resultat;
+		Graphics2D    g2d;
+		Font          police;
+		FontMetrics   metrics;
+		int           largeurTexte, hauteurTexte, ascent;
 
-        BufferedImage resultat = UtilitaireImage.copierImage(imageDestination);
-        Graphics2D g2d = resultat.createGraphics();
+		resultat = UtilitaireImage.copierImage(imageDestination);
+		g2d = resultat.createGraphics();
 
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        Font police = new Font("SansSerif", Font.BOLD, taillePolice);
-        g2d.setFont(police);
+		g2d.setRenderingHint(
+			RenderingHints.KEY_TEXT_ANTIALIASING,
+			RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+		);
 
-        FontMetrics metrics = g2d.getFontMetrics();
-        int largeurTexte = metrics.stringWidth(texte);
-        int hauteurTexte = metrics.getHeight();
-        int ascent = metrics.getAscent();
+		police = new Font("SansSerif", Font.BOLD, taillePolice);
+		g2d.setFont(police);
 
-        g2d.setColor(couleurFond);
-        g2d.fillRect(x - marge, y - ascent - marge,
-                largeurTexte + 2 * marge, hauteurTexte + 2 * marge);
+		metrics      = g2d.getFontMetrics();
+		largeurTexte = metrics.stringWidth(texte);
+		hauteurTexte = metrics.getHeight();
+		ascent       = metrics.getAscent();
 
-        g2d.dispose();
+		g2d.setColor(couleurFond);
+		g2d.fillRect(
+			x - marge, 
+			y - ascent - marge,
+			largeurTexte + 2 * marge, 
+			hauteurTexte + 2 * marge
+		);
+		g2d.dispose();
 
-        return dessinerTexteAvecCouleurImage(resultat, imageCouleurs, texte, x, y, taillePolice);
-    }
+		return dessinerTexteAvecCouleurImage(resultat, imageCouleurs, texte, x, y, taillePolice);
+	}
 
-    /**
-     * Convertit un entier ARGB en objet Color.
-     */
-    public static Color versColor(int argb) {
-        int[] comp = UtilitaireImage.extraireComposantes(argb);
-        return new Color(comp[1], comp[2], comp[3], comp[0]);
-    }
+	/**
+	 * Convertit un entier ARGB en objet Color.
+	 */
+	public static Color versColor(int argb) 
+	{
+		int[] comp;
+		comp = UtilitaireImage.extraireComposantes(argb);
+		return new Color(comp[1], comp[2], comp[3], comp[0]);
+	}
 
-    /**
-     * Convertit un objet Color en entier ARGB.
-     */
-    public static int versARGB(Color couleur) {
-        return UtilitaireImage.combinerComposantes(
-                couleur.getAlpha(), couleur.getRed(), couleur.getGreen(), couleur.getBlue());
-    }
+	/**
+	 * Convertit un objet Color en entier ARGB.
+	 */
+	public static int versARGB(Color couleur) 
+	{
+		return UtilitaireImage.combinerComposantes(
+			couleur.getAlpha(), 
+			couleur.getRed  (), 
+			couleur.getGreen(), 
+			couleur.getBlue ()
+		);
+	}
 
-    /**
-     * Couleurs prédéfinies pour faciliter l'utilisation.
-     */
-    public static final Color NOIR = Color.BLACK;
-    public static final Color BLANC = Color.WHITE;
-    public static final Color ROUGE = Color.RED;
-    public static final Color VERT = Color.GREEN;
-    public static final Color BLEU = Color.BLUE;
-    public static final Color JAUNE = Color.YELLOW;
-    public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
-
-    public static final Color FOND_SEMI_TRANSPARENT = new Color(0, 0, 0, 128);
+	/**
+	 * Couleurs prédéfinies pour faciliter l'utilisation.
+	 */
+	public static final Color NOIR                  = Color.BLACK;
+	public static final Color BLANC                 = Color.WHITE;
+	public static final Color ROUGE                 = Color.RED;
+	public static final Color VERT                  = Color.GREEN;
+	public static final Color BLEU                  = Color.BLUE;
+	public static final Color JAUNE                 = Color.YELLOW;
+	public static final Color TRANSPARENT           = new Color(0, 0, 0, 0);
+	public static final Color FOND_SEMI_TRANSPARENT = new Color(0, 0, 0, 128);
 }

@@ -18,33 +18,35 @@ import javax.swing.SwingUtilities;
  * 
  * @author Équipe 6 - BUT 3 Informatique
  */
-public class ApplicationPrincipale {
+public class ApplicationPrincipale 
+{
 
-    /**
-     * Point d'entrée du programme.
-     * 
-     * @param args Arguments de la ligne de commande (non utilisés)
-     */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            System.out.println("==========================================");
-            System.out.println("  ÉDITEUR D'IMAGES - BUT 3 INFORMATIQUE");
-            System.out.println("  Architecture Modèle-Vue-Contrôleur");
-            System.out.println("  Équipe 6 - Programmation Multimédia");
-            System.out.println("==========================================");
-            System.out.println();
+	/**
+	 * Point d'entrée du programme.
+	 * 
+	 * @param args Arguments de la ligne de commande (non utilisés)
+	 */
+	public static void main(String[] args) 
+	{
+		SwingUtilities.invokeLater(() -> {
+			System.out.println("==========================================");
+			System.out.println("  ÉDITEUR D'IMAGES - BUT 3 INFORMATIQUE");
+			System.out.println("  Architecture Modèle-Vue-Contrôleur");
+			System.out.println("  Équipe 6 - Programmation Multimédia");
+			System.out.println("==========================================");
+			System.out.println();
 
-            ModeleImage modele = new ModeleImage();
-            System.out.println("Modèle créé");
+			ModeleImage modele = new ModeleImage();
+			System.out.println("Modèle créé");
 
-            FramePrincipal vue = new FramePrincipal();
-            System.out.println("Vue créée");
+			FramePrincipal vue = new FramePrincipal();
+			System.out.println("Vue créée");
 
-            ControleurPrincipal controleur = new ControleurPrincipal(modele, vue);
-            System.out.println("Contrôleur créé");
+			ControleurPrincipal controleur = new ControleurPrincipal(modele, vue);
+			System.out.println("Contrôleur créé");
 
-            controleur.initialiser();
-            System.out.println("Application initialisée");
-        });
-    }
+			controleur.initialiser();
+			System.out.println("Application initialisée");
+		});
+	}
 }

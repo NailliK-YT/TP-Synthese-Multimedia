@@ -16,333 +16,419 @@ import java.awt.image.BufferedImage;
  * 
  * @author Équipe 6 - BUT 3 Informatique
  */
-public class TraitementTransformation {
+public class TraitementTransformation 
+{
 
-    /**
-     * Effectue une rotation de 90° ou -90°.
-     * 
-     * @param image L'image à tourner
-     * @param angle Angle de rotation (90 = horaire, -90 = anti-horaire)
-     * @return L'image tournée
-     */
-    public static BufferedImage rotation90(BufferedImage image, int angle) {
-        int largeur = image.getWidth();
-        int hauteur = image.getHeight();
-        BufferedImage resultat = UtilitaireImage.creerImageVide(hauteur, largeur);
+	/**
+	 * Effectue une rotation (angle en degré)
+	 * 
+	 * @param image L'image à tourner
+	 * @param angle Angle de rotation (angle > 0 -> horaire, angle < 0 -> anti-horaire)
+	 * @return L'image tournée
+	 */
+	public static BufferedImage appliquerRotation(BufferedImage image, int angle)
+	{
+		int           largeur, hauteur, couleur, nouveauX, nouveauY;
+		BufferedImage resultat;
 
-        for (int y = 0; y < hauteur; y++) {
-            for (int x = 0; x < largeur; x++) {
-                int couleur = image.getRGB(x, y);
-                int nouveauX, nouveauY;
+		largeur  = image.getWidth();
+		hauteur  = image.getHeight();
+		resultat = UtilitaireImage.creerImageVide(hauteur, largeur);
 
-                if (angle == 90) {
-                    nouveauX = hauteur - 1 - y;
-                    nouveauY = x;
-                } else {
-                    nouveauX = y;
-                    nouveauY = largeur - 1 - x;
-                }
+		for (int y = 0; y < hauteur; y++) 
+		{
+			for (int x = 0; x < largeur; x++) 
+			{
+				couleur = image.getRGB(x, y);
 
-                resultat.setRGB(nouveauX, nouveauY, couleur);
-            }
-        }
-        return resultat;
-    }
+				if (angle == 90) 
+				{
+					nouveauX = hauteur - 1 - y;
+					nouveauY = x;
+				} 
+				else 
+				{
+					nouveauX = y;
+					nouveauY = largeur - 1 - x;
+				}
 
-    /**
-     * Ajuste la luminosité de l'image.
-     * 
-     * PRINCIPE :
-     * On ajoute (ou soustrait) une valeur à chaque composante RGB.
-     * - Valeur positive : éclaircit l'image
-     * - Valeur négative : assombrit l'image
-     * 
-     * FORMULE :
-     * nouvelleValeur = ancienneValeur + facteur
-     * (bornée entre 0 et 255)
-     * 
-     * @param image   L'image à modifier
-     * @param facteur Valeur à ajouter (-255 à +255)
-     * @return L'image avec la luminosité ajustée
-     */
-    public static BufferedImage ajusterLuminosite(BufferedImage image, int facteur) {
-        int largeur = image.getWidth();
-        int hauteur = image.getHeight();
+				resultat.setRGB(nouveauX, nouveauY, couleur);
+			}
+		}
+		return resultat;
+	}
 
-        BufferedImage resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
+	/**
+	 * Ajuste la luminosité de l'image.
+	 * 
+	 * PRINCIPE :
+	 * On ajoute (ou soustrait) une valeur à chaque composante RGB.
+	 * - Valeur positive : éclaircit l'image
+	 * - Valeur négative : assombrit l'image
+	 * 
+	 * FORMULE :
+	 * nouvelleValeur = ancienneValeur + facteur
+	 * (bornée entre 0 et 255)
+	 * 
+	 * @param image   L'image à modifier
+	 * @param facteur Valeur à ajouter (-255 à +255)
+	 * @return L'image avec la luminosité ajustée
+	 */
+	public static BufferedImage ajusterLuminosite(BufferedImage image, int facteur)
+	{
+		int           largeur, hauteur;
+		BufferedImage resultat;
+		int           couleur, alpha, nouveauRouge, nouveauVert, nouveauBleu, nouvelleCouleur;
+		int[]         composantes;
 
-        for (int y = 0; y < hauteur; y++) {
-            for (int x = 0; x < largeur; x++) {
-                int couleur = image.getRGB(x, y);
-                int[] composantes = UtilitaireImage.extraireComposantes(couleur);
+		largeur  = image.getWidth();
+		hauteur  = image.getHeight();
+		resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
 
-                int alpha = composantes[0];
+		for (int y = 0; y < hauteur; y++) 
+		{
+			for (int x = 0; x < largeur; x++) 
+			{
+				couleur     = image.getRGB(x, y);
+				composantes = UtilitaireImage.extraireComposantes(couleur);
 
-                int nouveauRouge = borner(composantes[1] + facteur);
-                int nouveauVert = borner(composantes[2] + facteur);
-                int nouveauBleu = borner(composantes[3] + facteur);
+				alpha        = composantes[0];
+				nouveauRouge = TraitementTransformation.borner(composantes[1] + facteur);
+				nouveauVert  = TraitementTransformation.borner(composantes[2] + facteur);
+				nouveauBleu  = TraitementTransformation.borner(composantes[3] + facteur);
 
-                int nouvelleCouleur = UtilitaireImage.combinerComposantes(
-                        alpha, nouveauRouge, nouveauVert, nouveauBleu);
-                resultat.setRGB(x, y, nouvelleCouleur);
-            }
-        }
+				nouvelleCouleur = UtilitaireImage.combinerComposantes(
+					alpha, 
+					nouveauRouge, 
+					nouveauVert, 
+					nouveauBleu
+				);
 
-        return resultat;
-    }
+				resultat.setRGB(x, y, nouvelleCouleur);
+			}
+		}
 
-    /**
-     * Ajuste le contraste de l'image.
-     * 
-     * PRINCIPE :
-     * Le contraste mesure l'écart entre les zones claires et sombres.
-     * On utilise un facteur multiplicatif centré sur 128 (gris moyen).
-     * 
-     * FORMULE :
-     * nouvelleValeur = 128 + (ancienneValeur - 128) * facteur
-     * 
-     * - facteur > 1 : augmente le contraste
-     * - facteur < 1 : diminue le contraste
-     * - facteur = 1 : pas de changement
-     * 
-     * @param image   L'image à modifier
-     * @param facteur Facteur de contraste (0.0 à 3.0 typiquement)
-     * @return L'image avec le contraste ajusté
-     */
-    public static BufferedImage ajusterContraste(BufferedImage image, double facteur) {
-        int largeur = image.getWidth();
-        int hauteur = image.getHeight();
+		return resultat;
+	}
 
-        BufferedImage resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
+	/**
+	 * Ajuste le contraste de l'image.
+	 * 
+	 * PRINCIPE :
+	 * Le contraste mesure l'écart entre les zones claires et sombres.
+	 * On utilise un facteur multiplicatif centré sur 128 (gris moyen).
+	 * 
+	 * FORMULE :
+	 * nouvelleValeur = 128 + (ancienneValeur - 128) * facteur
+	 * 
+	 * - facteur > 1 : augmente le contraste
+	 * - facteur < 1 : diminue le contraste
+	 * - facteur = 1 : pas de changement
+	 * 
+	 * @param image   L'image à modifier
+	 * @param facteur Facteur de contraste (0.0 à 3.0 typiquement)
+	 * @return L'image avec le contraste ajusté
+	 */
+	public static BufferedImage ajusterContraste(BufferedImage image, double facteur) 
+	{
+		int           largeur, hauteur;
+		BufferedImage resultat;
+		int           couleur, alpha, nouveauRouge, nouveauVert, nouveauBleu, nouvelleCouleur;
+		int[]         composantes;
 
-        for (int y = 0; y < hauteur; y++) {
-            for (int x = 0; x < largeur; x++) {
-                int couleur = image.getRGB(x, y);
-                int[] composantes = UtilitaireImage.extraireComposantes(couleur);
+		largeur  = image.getWidth();
+		hauteur  = image.getHeight();
+		resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
 
-                int alpha = composantes[0];
+		for (int y = 0; y < hauteur; y++)
+		{
+			for (int x = 0; x < largeur; x++)
+			{
+				couleur     = image.getRGB(x, y);
+				composantes = UtilitaireImage.extraireComposantes(couleur);
 
-                int nouveauRouge = borner((int) (128 + (composantes[1] - 128) * facteur));
-                int nouveauVert = borner((int) (128 + (composantes[2] - 128) * facteur));
-                int nouveauBleu = borner((int) (128 + (composantes[3] - 128) * facteur));
+				alpha        = composantes[0];
+				nouveauRouge = TraitementTransformation.borner((int) (128 + (composantes[1] - 128) * facteur));
+				nouveauVert  = TraitementTransformation.borner((int) (128 + (composantes[2] - 128) * facteur));
+				nouveauBleu  = TraitementTransformation.borner((int) (128 + (composantes[3] - 128) * facteur));
 
-                int nouvelleCouleur = UtilitaireImage.combinerComposantes(
-                        alpha, nouveauRouge, nouveauVert, nouveauBleu);
-                resultat.setRGB(x, y, nouvelleCouleur);
-            }
-        }
+				nouvelleCouleur = UtilitaireImage.combinerComposantes(
+					alpha,
+					nouveauRouge,
+					nouveauVert, 
+					nouveauBleu
+				);
 
-        return resultat;
-    }
+				resultat.setRGB(x, y, nouvelleCouleur);
+			}
+		}
 
-    /**
-     * Modifie la teinte de l'image (rotation dans l'espace HSV).
-     * 
-     * PRINCIPE :
-     * La teinte (Hue) est un angle sur le cercle chromatique (0° à 360°).
-     * On convertit RGB → HSV, on décale la teinte, puis HSV → RGB.
-     * 
-     * @param image    L'image à modifier
-     * @param decalage Décalage de teinte en degrés (0 à 360)
-     * @return L'image avec la teinte modifiée
-     */
-    public static BufferedImage decalerTeinte(BufferedImage image, int decalage) {
-        int largeur = image.getWidth();
-        int hauteur = image.getHeight();
+		return resultat;
+	}
 
-        BufferedImage resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
+	/**
+	 * Modifie la teinte de l'image (rotation dans l'espace HSV).
+	 * 
+	 * PRINCIPE :
+	 * La teinte (Hue) est un angle sur le cercle chromatique (0° à 360°).
+	 * On convertit RGB → HSV, on décale la teinte, puis HSV → RGB.
+	 * 
+	 * @param image    L'image à modifier
+	 * @param decalage Décalage de teinte en degrés (0 à 360)
+	 * @return L'image avec la teinte modifiée
+	 */
+	public static BufferedImage decalerTeinte(BufferedImage image, int decalage) 
+	{
+		int           largeur, hauteur;
+		BufferedImage resultat;
+		int           couleur, alpha, rouge, vert, bleu, nouvelleCouleur;
+		int[]         composantes, nouveauRgb;
+		float[]       hsv;
 
-        for (int y = 0; y < hauteur; y++) {
-            for (int x = 0; x < largeur; x++) {
-                int couleur = image.getRGB(x, y);
-                int[] composantes = UtilitaireImage.extraireComposantes(couleur);
+		largeur  = image.getWidth();
+		hauteur  = image.getHeight();
+		resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
 
-                int alpha = composantes[0];
-                int rouge = composantes[1];
-                int vert = composantes[2];
-                int bleu = composantes[3];
+		for (int y = 0; y < hauteur; y++) 
+		{
+			for (int x = 0; x < largeur; x++) 
+			{
+				couleur     = image.getRGB(x, y);
+				composantes = UtilitaireImage.extraireComposantes(couleur);
 
-                float[] hsv = rgbVersHsv(rouge, vert, bleu);
+				alpha = composantes[0];
+				rouge = composantes[1];
+				vert  = composantes[2];
+				bleu  = composantes[3];
 
-                hsv[0] = (hsv[0] + decalage) % 360;
-                if (hsv[0] < 0)
-                    hsv[0] += 360;
+				hsv = TraitementTransformation.rgbVersHsv(rouge, vert, bleu);
 
-                int[] nouveauRgb = hsvVersRgb(hsv[0], hsv[1], hsv[2]);
+				hsv[0] = (hsv[0] + decalage) % 360;
+				if (hsv[0] < 0)
+					hsv[0] += 360;
 
-                int nouvelleCouleur = UtilitaireImage.combinerComposantes(
-                        alpha, nouveauRgb[0], nouveauRgb[1], nouveauRgb[2]);
-                resultat.setRGB(x, y, nouvelleCouleur);
-            }
-        }
+				nouveauRgb = hsvVersRgb(hsv[0], hsv[1], hsv[2]);
 
-        return resultat;
-    }
+				nouvelleCouleur = UtilitaireImage.combinerComposantes(
+					alpha, 
+					nouveauRgb[0], 
+					nouveauRgb[1], 
+					nouveauRgb[2]
+				);
 
-    /**
-     * Convertit l'image en niveaux de gris.
-     * 
-     * FORMULE STANDARD (luminance perçue) :
-     * gris = 0.299 * R + 0.587 * G + 0.114 * B
-     * 
-     * Ces coefficients correspondent à la sensibilité de l'œil humain.
-     * 
-     * @param image L'image à convertir
-     * @return L'image en niveaux de gris
-     */
-    public static BufferedImage versNiveauxDeGris(BufferedImage image) {
-        int largeur = image.getWidth();
-        int hauteur = image.getHeight();
+				resultat.setRGB(x, y, nouvelleCouleur);
+			}
+		}
 
-        BufferedImage resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
+		return resultat;
+	}
 
-        for (int y = 0; y < hauteur; y++) {
-            for (int x = 0; x < largeur; x++) {
-                int couleur = image.getRGB(x, y);
-                int[] composantes = UtilitaireImage.extraireComposantes(couleur);
+	/**
+	 * Convertit l'image en niveaux de gris.
+	 * 
+	 * FORMULE STANDARD (luminance perçue) :
+	 * gris = 0.299 * R + 0.587 * G + 0.114 * B
+	 * 
+	 * Ces coefficients correspondent à la sensibilité de l'œil humain.
+	 * 
+	 * @param image L'image à convertir
+	 * @return L'image en niveaux de gris
+	 */
+	public static BufferedImage versNiveauxDeGris(BufferedImage image) 
+	{
+		int           largeur, hauteur;
+		BufferedImage resultat;
+		int           couleur, alpha, gris, nouvelleCouleur;
+		int[]         composantes;
 
-                int alpha = composantes[0];
+		largeur  = image.getWidth();
+		hauteur  = image.getHeight();
+		resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
 
-                int gris = (int) (0.299 * composantes[1] +
-                        0.587 * composantes[2] +
-                        0.114 * composantes[3]);
+		for (int y = 0; y < hauteur; y++)
+		{
+			for (int x = 0; x < largeur; x++)
+			{
+				couleur = image.getRGB(x, y);
+				composantes = UtilitaireImage.extraireComposantes(couleur);
 
-                int nouvelleCouleur = UtilitaireImage.combinerComposantes(alpha, gris, gris, gris);
-                resultat.setRGB(x, y, nouvelleCouleur);
-            }
-        }
+				alpha = composantes[0];
 
-        return resultat;
-    }
+				gris = (int) (
+					0.299 * composantes[1] +
+					0.587 * composantes[2] +
+					0.114 * composantes[3]
+				);
 
-    /**
-     * Inverse les couleurs de l'image (négatif).
-     * 
-     * FORMULE :
-     * nouvelleValeur = 255 - ancienneValeur
-     * 
-     * @param image L'image à inverser
-     * @return L'image en négatif
-     */
-    public static BufferedImage inverserCouleurs(BufferedImage image) {
-        int largeur = image.getWidth();
-        int hauteur = image.getHeight();
+				nouvelleCouleur = UtilitaireImage.combinerComposantes(
+					alpha,
+					gris, 
+					gris, 
+					gris
+				);
 
-        BufferedImage resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
+				resultat.setRGB(x, y, nouvelleCouleur);
+			}
+		}
 
-        for (int y = 0; y < hauteur; y++) {
-            for (int x = 0; x < largeur; x++) {
-                int couleur = image.getRGB(x, y);
-                int[] composantes = UtilitaireImage.extraireComposantes(couleur);
+		return resultat;
+	}
 
-                int alpha = composantes[0];
-                int nouveauRouge = 255 - composantes[1];
-                int nouveauVert = 255 - composantes[2];
-                int nouveauBleu = 255 - composantes[3];
+	/**
+	 * Inverse les couleurs de l'image (négatif).
+	 * 
+	 * FORMULE :
+	 * nouvelleValeur = 255 - ancienneValeur
+	 * 
+	 * @param image L'image à inverser
+	 * @return L'image en négatif
+	 */
+	public static BufferedImage inverserCouleurs(BufferedImage image) 
+	{
+		int           largeur, hauteur;
+		BufferedImage resultat;
+		int           couleur, alpha, nouveauRouge, nouveauVert, nouveauBleu, nouvelleCouleur;
+		int[]         composantes;
 
-                int nouvelleCouleur = UtilitaireImage.combinerComposantes(
-                        alpha, nouveauRouge, nouveauVert, nouveauBleu);
-                resultat.setRGB(x, y, nouvelleCouleur);
-            }
-        }
+		largeur  = image.getWidth();
+		hauteur  = image.getHeight();
+		resultat = UtilitaireImage.creerImageVide(largeur, hauteur);
 
-        return resultat;
-    }
+		for (int y = 0; y < hauteur; y++) 
+		{
+			for (int x = 0; x < largeur; x++) 
+			{
+				couleur = image.getRGB(x, y);
+				composantes = UtilitaireImage.extraireComposantes(couleur);
 
-    /**
-     * Borne une valeur entre 0 et 255.
-     */
-    private static int borner(int valeur) {
-        return Math.max(0, Math.min(255, valeur));
-    }
+				alpha        = composantes[0];
+				nouveauRouge = 255 - composantes[1];
+				nouveauVert  = 255 - composantes[2];
+				nouveauBleu  = 255 - composantes[3];
 
-    /**
-     * Convertit RGB vers HSV.
-     * 
-     * @param r Rouge (0-255)
-     * @param g Vert (0-255)
-     * @param b Bleu (0-255)
-     * @return Un tableau [H, S, V] avec H en degrés (0-360), S et V en % (0-100)
-     */
-    private static float[] rgbVersHsv(int r, int g, int b) {
-        float rNorm = r / 255f;
-        float gNorm = g / 255f;
-        float bNorm = b / 255f;
+				nouvelleCouleur = UtilitaireImage.combinerComposantes(
+					alpha, 
+					nouveauRouge, 
+					nouveauVert, 
+					nouveauBleu
+				);
 
-        float max = Math.max(rNorm, Math.max(gNorm, bNorm));
-        float min = Math.min(rNorm, Math.min(gNorm, bNorm));
-        float delta = max - min;
+				resultat.setRGB(x, y, nouvelleCouleur);
+			}
+		}
 
-        float h = 0, s, v;
+		return resultat;
+	}
 
-        if (delta == 0) {
-            h = 0;
-        } else if (max == rNorm) {
-            h = 60 * (((gNorm - bNorm) / delta) % 6);
-        } else if (max == gNorm) {
-            h = 60 * (((bNorm - rNorm) / delta) + 2);
-        } else {
-            h = 60 * (((rNorm - gNorm) / delta) + 4);
-        }
+	/**
+	 * Borne une valeur entre 0 et 255.
+	 */
+	private static int borner(int valeur) 
+	{
+		return Math.max(0, Math.min(255, valeur));
+	}
 
-        if (h < 0)
-            h += 360;
+	/**
+	 * Convertit RGB vers HSV.
+	 * 
+	 * @param r Rouge (0-255)
+	 * @param g Vert (0-255)
+	 * @param b Bleu (0-255)
+	 * @return Un tableau [H, S, V] avec H en degrés (0-360), S et V en % (0-100)
+	 */
+	private static float[] rgbVersHsv(int r, int g, int b)
+	{
+		float rNorm, gNorm, bNorm;
+		float max, min, delta;
+		float h, s, v;
+		
+		rNorm = r / 255f;
+		gNorm = g / 255f;
+		bNorm = b / 255f;
 
-        s = (max == 0) ? 0 : (delta / max) * 100;
+		max   = Math.max(rNorm, Math.max(gNorm, bNorm));
+		min   = Math.min(rNorm, Math.min(gNorm, bNorm));
+		delta = max - min;
 
-        v = max * 100;
+		h = 0;
 
-        return new float[] { h, s, v };
-    }
+		if (delta == 0) 
+			h = 0;
+		else if (max == rNorm)
+			h = 60 * (((gNorm - bNorm) / delta) % 6);
+		else if (max == gNorm)
+			h = 60 * (((bNorm - rNorm) / delta) + 2);
+		else
+			h = 60 * (((rNorm - gNorm) / delta) + 4);
 
-    /**
-     * Convertit HSV vers RGB.
-     * 
-     * @param h Teinte en degrés (0-360)
-     * @param s Saturation en % (0-100)
-     * @param v Valeur en % (0-100)
-     * @return Un tableau [R, G, B] avec des valeurs 0-255
-     */
-    private static int[] hsvVersRgb(float h, float s, float v) {
-        s = s / 100f;
-        v = v / 100f;
+		if (h < 0)
+			h += 360;
 
-        float c = v * s;
-        float x = c * (1 - Math.abs((h / 60) % 2 - 1));
-        float m = v - c;
+		s = (max == 0) ? 0 : (delta / max) * 100;
 
-        float rPrime = 0, gPrime = 0, bPrime = 0;
+		v = max * 100;
 
-        if (h < 60) {
-            rPrime = c;
-            gPrime = x;
-            bPrime = 0;
-        } else if (h < 120) {
-            rPrime = x;
-            gPrime = c;
-            bPrime = 0;
-        } else if (h < 180) {
-            rPrime = 0;
-            gPrime = c;
-            bPrime = x;
-        } else if (h < 240) {
-            rPrime = 0;
-            gPrime = x;
-            bPrime = c;
-        } else if (h < 300) {
-            rPrime = x;
-            gPrime = 0;
-            bPrime = c;
-        } else {
-            rPrime = c;
-            gPrime = 0;
-            bPrime = x;
-        }
+		return new float[] { h, s, v };
+	}
 
-        int r = Math.round((rPrime + m) * 255);
-        int g = Math.round((gPrime + m) * 255);
-        int b = Math.round((bPrime + m) * 255);
+	/**
+	 * Convertit HSV vers RGB.
+	 * 
+	 * @param h Teinte en degrés (0-360)
+	 * @param s Saturation en % (0-100)
+	 * @param v Valeur en % (0-100)
+	 * @return Un tableau [R, G, B] avec des valeurs 0-255
+	 */
+	private static int[] hsvVersRgb(float h, float s, float v)
+	{
+		float c, x, m, rPrime, gPrime, bPrime;
+		int   r, g, b;
 
-        return new int[] { borner(r), borner(g), borner(b) };
-    }
+		s = s / 100f;
+		v = v / 100f;
+
+		c = v * s;
+		x = c * (1 - Math.abs((h / 60) % 2 - 1));
+		m = v - c;
+
+		rPrime = 0; 
+		gPrime = 0; 
+		bPrime = 0;
+
+		if (h < 60) {
+			rPrime = c;
+			gPrime = x;
+			bPrime = 0;
+		} else if (h < 120) {
+			rPrime = x;
+			gPrime = c;
+			bPrime = 0;
+		} else if (h < 180) {
+			rPrime = 0;
+			gPrime = c;
+			bPrime = x;
+		} else if (h < 240) {
+			rPrime = 0;
+			gPrime = x;
+			bPrime = c;
+		} else if (h < 300) {
+			rPrime = x;
+			gPrime = 0;
+			bPrime = c;
+		} else {
+			rPrime = c;
+			gPrime = 0;
+			bPrime = x;
+		}
+
+		r = Math.round((rPrime + m) * 255);
+		g = Math.round((gPrime + m) * 255);
+		b = Math.round((bPrime + m) * 255);
+
+		return new int[] { 
+			TraitementTransformation.borner(r), 
+			TraitementTransformation.borner(g), 
+			TraitementTransformation.borner(b) 
+		};
+	}
 }

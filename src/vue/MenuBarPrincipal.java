@@ -18,132 +18,147 @@ import javax.swing.*;
  * 
  * @author Équipe 6 - BUT 3 Informatique
  */
-public class MenuBarPrincipal extends JMenuBar {
+public class MenuBarPrincipal extends JMenuBar 
+{
 
-    private ControleurFichier controleurFichier;
-    private ControleurImage controleurImage;
+	private ControleurFichier controleurFichier;
+	private ControleurImage   controleurImage;
 
-    /**
-     * Construit la barre de menu avec les contrôleurs nécessaires.
-     * 
-     * @param controleurFichier Le contrôleur de gestion des fichiers
-     * @param controleurImage   Le contrôleur de traitement d'images
-     */
-    public MenuBarPrincipal(ControleurFichier controleurFichier, ControleurImage controleurImage) {
-        this.controleurFichier = controleurFichier;
-        this.controleurImage = controleurImage;
+	/**
+	 * Construit la barre de menu avec les contrôleurs nécessaires.
+	 * 
+	 * @param controleurFichier Le contrôleur de gestion des fichiers
+	 * @param controleurImage   Le contrôleur de traitement d'images
+	 */
+	public MenuBarPrincipal(ControleurFichier controleurFichier, ControleurImage controleurImage) 
+	{
+		this.controleurFichier = controleurFichier;
+		this.controleurImage   = controleurImage;
 
-        creerMenus();
-    }
+		this.creerMenus();
+	}
 
-    private void creerMenus() {
-        add(creerMenuFichier());
-        add(creerMenuFusion());
-    }
+	private void creerMenus() 
+	{
+		this.add(this.creerMenuFichier());
+		this.add(this.creerMenuFusion ());
+	}
 
-    /**
-     * Crée le menu Fichier.
-     * 
-     * @return Le menu Fichier
-     */
-    private JMenu creerMenuFichier() {
-        JMenu menuFichier = new JMenu("Fichier");
+	/**
+	 * Crée le menu Fichier.
+	 * 
+	 * @return Le menu Fichier
+	 */
+	private JMenu creerMenuFichier() 
+	{
+		JMenu     menuFichier;
+		JMenuItem itemOuvrir, itemOuvrirSecondaire, itemSauvegarder, itemRestaurer, itemQuitter;
 
-        JMenuItem itemOuvrir = new JMenuItem("Ouvrir image principale...");
-        itemOuvrir.addActionListener(e -> controleurFichier.ouvrirImagePrincipale());
+		menuFichier = new JMenu("Fichier");
 
-        JMenuItem itemOuvrirSecondaire = new JMenuItem("Ouvrir image secondaire...");
-        itemOuvrirSecondaire.addActionListener(e -> controleurFichier.ouvrirImageSecondaire());
+		itemOuvrir = new JMenuItem("Ouvrir image principale...");
+		itemOuvrir.addActionListener(e -> controleurFichier.ouvrirImagePrincipale());
 
-        JMenuItem itemSauvegarder = new JMenuItem("Sauvegarder...");
-        itemSauvegarder.addActionListener(e -> controleurFichier.sauvegarderImage());
+		itemOuvrirSecondaire = new JMenuItem("Ouvrir image secondaire...");
+		itemOuvrirSecondaire.addActionListener(e -> controleurFichier.ouvrirImageSecondaire());
 
-        JMenuItem itemRestaurer = new JMenuItem("Restaurer l'originale");
-        itemRestaurer.addActionListener(e -> controleurFichier.restaurerOriginale());
+		itemSauvegarder = new JMenuItem("Sauvegarder...");
+		itemSauvegarder.addActionListener(e -> controleurFichier.sauvegarderImage());
 
-        JMenuItem itemQuitter = new JMenuItem("Quitter");
-        itemQuitter.addActionListener(e -> controleurFichier.quitter());
+		itemRestaurer = new JMenuItem("Restaurer l'originale");
+		itemRestaurer.addActionListener(e -> controleurFichier.restaurerOriginale());
 
-        menuFichier.add(itemOuvrir);
-        menuFichier.add(itemOuvrirSecondaire);
-        menuFichier.addSeparator();
-        menuFichier.add(itemSauvegarder);
-        menuFichier.add(itemRestaurer);
-        menuFichier.addSeparator();
-        menuFichier.add(itemQuitter);
+		itemQuitter = new JMenuItem("Quitter");
+		itemQuitter.addActionListener(e -> controleurFichier.quitter());
 
-        return menuFichier;
-    }
+		menuFichier.add(itemOuvrir);
+		menuFichier.add(itemOuvrirSecondaire);
+		menuFichier.addSeparator();
+		menuFichier.add(itemSauvegarder);
+		menuFichier.add(itemRestaurer);
+		menuFichier.addSeparator();
+		menuFichier.add(itemQuitter);
 
-    /**
-     * Crée le menu Fusion (avec sous-menu Transformations).
-     * 
-     * @return Le menu Fusion
-     */
-    private JMenu creerMenuFusion() {
-        JMenu menuFusion = new JMenu("Fusion");
+		return menuFichier;
+	}
 
-        JMenuItem itemSuperposer = new JMenuItem("Superposer image secondaire");
-        itemSuperposer.addActionListener(e -> controleurImage.superposerImages());
+	/**
+	 * Crée le menu Fusion (avec sous-menu Transformations).
+	 * 
+	 * @return Le menu Fusion
+	 */
+	private JMenu creerMenuFusion() 
+	{
+		JMenu     menuFusion;
+		JMenuItem itemSuperposer, itemSuperposerAlpha, itemChromaKey, itemFusionner;
 
-        JMenuItem itemSuperposerAlpha = new JMenuItem("Superposer avec transparence");
-        itemSuperposerAlpha.addActionListener(e -> controleurImage.superposerAvecAlpha());
+		menuFusion = new JMenu("Fusion");
 
-        JMenuItem itemChromaKey = new JMenuItem("Superposer avec chroma key");
-        itemChromaKey.addActionListener(e -> controleurImage.superposerChromaKey());
+		itemSuperposer = new JMenuItem("Superposer image secondaire");
+		itemSuperposer.addActionListener(e -> controleurImage.superposerImages());
 
-        JMenuItem itemFusionner = new JMenuItem("Juxtaposer avec fondu");
-        itemFusionner.addActionListener(e -> controleurImage.fusionnerImages());
+		itemSuperposerAlpha = new JMenuItem("Superposer avec transparence");
+		itemSuperposerAlpha.addActionListener(e -> controleurImage.superposerAvecAlpha());
 
-        menuFusion.add(itemSuperposer);
-        menuFusion.add(itemSuperposerAlpha);
-        menuFusion.add(itemChromaKey);
-        menuFusion.add(itemFusionner);
-        menuFusion.addSeparator();
-        menuFusion.add(creerMenuTransformations());
+		itemChromaKey = new JMenuItem("Superposer avec chroma key");
+		itemChromaKey.addActionListener(e -> controleurImage.superposerChromaKey());
 
-        return menuFusion;
-    }
+		itemFusionner = new JMenuItem("Juxtaposer avec fondu");
+		itemFusionner.addActionListener(e -> controleurImage.fusionnerImages());
 
-    /**
-     * Crée le sous-menu Transformations.
-     * 
-     * @return Le menu Transformations
-     */
-    private JMenu creerMenuTransformations() {
-        JMenu menuTransform = new JMenu("Transformations");
+		menuFusion.add(itemSuperposer);
+		menuFusion.add(itemSuperposerAlpha);
+		menuFusion.add(itemChromaKey);
+		menuFusion.add(itemFusionner);
+		menuFusion.addSeparator();
+		menuFusion.add(this.creerMenuTransformations());
 
-        JMenuItem itemRotDroite = new JMenuItem("Rotation 90° droite");
-        itemRotDroite.addActionListener(e -> controleurImage.appliquerRotation90Droite());
+		return menuFusion;
+	}
 
-        JMenuItem itemRotGauche = new JMenuItem("Rotation 90° gauche");
-        itemRotGauche.addActionListener(e -> controleurImage.appliquerRotation90Gauche());
+	/**
+	 * Crée le sous-menu Transformations.
+	 * 
+	 * @return Le menu Transformations
+	 */
+	private JMenu creerMenuTransformations() 
+	{
+		JMenu menuTransform;
+		JMenuItem itemRotDroite, itemRotGauche, itemLuminosite, itemContraste, itemTeinte, itemGris, itemNegatif;
 
-        JMenuItem itemLuminosite = new JMenuItem("Ajuster luminosité...");
-        itemLuminosite.addActionListener(e -> controleurImage.ajusterLuminosite());
+		menuTransform = new JMenu("Transformations");
 
-        JMenuItem itemContraste = new JMenuItem("Ajuster contraste...");
-        itemContraste.addActionListener(e -> controleurImage.ajusterContraste());
+		itemRotDroite = new JMenuItem("Rotation 90° droite");
+		itemRotDroite.addActionListener(e -> controleurImage.appliquerRotation(90));
 
-        JMenuItem itemTeinte = new JMenuItem("Décaler teinte...");
-        itemTeinte.addActionListener(e -> controleurImage.decalerTeinte());
+		itemRotGauche = new JMenuItem("Rotation 90° gauche");
+		itemRotGauche.addActionListener(e -> controleurImage.appliquerRotation(-90));
 
-        JMenuItem itemGris = new JMenuItem("Niveaux de gris");
-        itemGris.addActionListener(e -> controleurImage.convertirEnGris());
+		itemLuminosite = new JMenuItem("Ajuster luminosité...");
+		itemLuminosite.addActionListener(e -> controleurImage.ajusterLuminosite());
 
-        JMenuItem itemNegatif = new JMenuItem("Négatif");
-        itemNegatif.addActionListener(e -> controleurImage.appliquerNegatif());
+		itemContraste = new JMenuItem("Ajuster contraste...");
+		itemContraste.addActionListener(e -> controleurImage.ajusterContraste());
 
-        menuTransform.add(itemRotDroite);
-        menuTransform.add(itemRotGauche);
-        menuTransform.addSeparator();
-        menuTransform.add(itemLuminosite);
-        menuTransform.add(itemContraste);
-        menuTransform.add(itemTeinte);
-        menuTransform.addSeparator();
-        menuTransform.add(itemGris);
-        menuTransform.add(itemNegatif);
+		itemTeinte = new JMenuItem("Décaler teinte...");
+		itemTeinte.addActionListener(e -> controleurImage.decalerTeinte());
 
-        return menuTransform;
-    }
+		itemGris = new JMenuItem("Niveaux de gris");
+		itemGris.addActionListener(e -> controleurImage.convertirEnGris());
+
+		itemNegatif = new JMenuItem("Négatif");
+		itemNegatif.addActionListener(e -> controleurImage.appliquerNegatif());
+
+		menuTransform.add(itemRotDroite);
+		menuTransform.add(itemRotGauche);
+		menuTransform.addSeparator();
+		menuTransform.add(itemLuminosite);
+		menuTransform.add(itemContraste);
+		menuTransform.add(itemTeinte);
+		menuTransform.addSeparator();
+		menuTransform.add(itemGris);
+		menuTransform.add(itemNegatif);
+
+		return menuTransform;
+	}
 }

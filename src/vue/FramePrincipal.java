@@ -28,105 +28,119 @@ import java.awt.image.BufferedImage;
  * 
  * @author Équipe 6 - BUT 3 Informatique
  */
-public class FramePrincipal extends JFrame {
+public class FramePrincipal extends JFrame 
+{
 
-    private ControleurFichier controleurFichier;
-    private ControleurImage controleurImage;
+	private ControleurFichier controleurFichier;
+	private ControleurImage   controleurImage;
 
-    private PanelImage panelImage;
-    private PanelOutils panelOutils;
-    private PanelStatut panelStatut;
-    private MenuBarPrincipal menuBarPrincipal;
+	private PanelImage        panelImage;
+	private PanelOutils       panelOutils;
+	private PanelStatut       panelStatut;
 
-    public FramePrincipal() {
-        super("Éditeur d'Images - Architecture MVC - Équipe 6");
+	private MenuBarPrincipal  menuBarPrincipal;
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1200, 800);
-        setLocationRelativeTo(null);
+	public FramePrincipal() 
+	{
+		super("Éditeur d'Images - Architecture MVC - Équipe 6");
 
-        creerInterface();
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setSize(1200, 800);
+		this.setLocationRelativeTo(null);
 
-        setVisible(true);
-    }
+		this.creerInterface();
 
-    private void creerInterface() {
-        panelImage = new PanelImage();
-        panelOutils = new PanelOutils();
-        panelStatut = new PanelStatut();
+		this.setVisible(true);
+	}
 
-        JPanel panneauPrincipal = new JPanel(new BorderLayout());
+	private void creerInterface() 
+	{
+		JPanel panelPrincipal;
+		JScrollPane scrollPane;
+		
+		this.panelImage  = new PanelImage();
+		this.panelOutils = new PanelOutils();
+		this.panelStatut = new PanelStatut();
 
-        JScrollPane scrollPane = new JScrollPane(panelImage);
-        scrollPane.setBorder(BorderFactory.createTitledBorder("Image"));
+		panelPrincipal = new JPanel(new BorderLayout());
 
-        panneauPrincipal.add(scrollPane, BorderLayout.CENTER);
-        panneauPrincipal.add(panelStatut, BorderLayout.SOUTH);
-        panneauPrincipal.add(panelOutils, BorderLayout.EAST);
+		scrollPane = new JScrollPane(this.panelImage);
+		scrollPane.setBorder(BorderFactory.createTitledBorder("Image"));
 
-        add(panneauPrincipal);
-    }
+		panelPrincipal.add(scrollPane,       BorderLayout.CENTER);
+		panelPrincipal.add(this.panelStatut, BorderLayout.SOUTH);
+		panelPrincipal.add(this.panelOutils, BorderLayout.EAST);
 
-    /**
-     * Définit le contrôleur de fichier et initialise la barre de menu.
-     * 
-     * @param controleur Le contrôleur de fichier
-     */
-    public void definirControleurFichier(ControleurFichier controleur) {
-        this.controleurFichier = controleur;
+		this.add(panelPrincipal);
+	}
 
-        panelOutils.setControleurFichier(controleur);
+	/**
+	 * Définit le contrôleur de fichier et initialise la barre de menu.
+	 * 
+	 * @param controleur Le contrôleur de fichier
+	 */
+	public void definirControleurFichier(ControleurFichier controleur) 
+	{
+		this.controleurFichier = controleur;
 
-        if (controleurImage != null) {
-            menuBarPrincipal = new MenuBarPrincipal(controleurFichier, controleurImage);
-            setJMenuBar(menuBarPrincipal);
-        }
-    }
+		this.panelOutils.setControleurFichier(controleur);
 
-    /**
-     * Définit le contrôleur d'image et finalise l'initialisation.
-     * 
-     * @param controleur Le contrôleur d'image
-     */
-    public void definirControleurImage(ControleurImage controleur) {
-        this.controleurImage = controleur;
+		if (this.controleurImage != null) 
+		{
+			this.menuBarPrincipal = new MenuBarPrincipal(this.controleurFichier, this.controleurImage);
+			this.setJMenuBar(this.menuBarPrincipal);
+		}
+	}
 
-        panelImage.setControleurImage(controleur);
-        panelOutils.setControleurImage(controleur);
-        panelOutils.setFramePrincipal(this);
+	/**
+	 * Définit le contrôleur d'image et finalise l'initialisation.
+	 * 
+	 * @param controleur Le contrôleur d'image
+	 */
+	public void definirControleurImage(ControleurImage controleur) 
+	{
+		this.controleurImage = controleur;
 
-        panelOutils.initialiser();
+		this.panelImage.setControleurImage(controleur);
+		this.panelOutils.setControleurImage(controleur);
+		this.panelOutils.setFramePrincipal(this);
 
-        if (controleurFichier != null) {
-            menuBarPrincipal = new MenuBarPrincipal(controleurFichier, controleurImage);
-            setJMenuBar(menuBarPrincipal);
-        }
-    }
+		this.panelOutils.initialiser();
 
-    /**
-     * Affiche l'image dans le panneau d'affichage.
-     * 
-     * @param image L'image à afficher
-     */
-    public void afficherImage(BufferedImage image) {
-        panelImage.setImage(image);
-    }
+		if (this.controleurFichier != null) 
+		{
+			this.menuBarPrincipal = new MenuBarPrincipal(this.controleurFichier, this.controleurImage);
+			setJMenuBar(this.menuBarPrincipal);
+		}
+	}
 
-    /**
-     * Met à jour le message de la barre de statut.
-     * 
-     * @param message Le message à afficher
-     */
-    public void mettreAJourStatut(String message) {
-        panelStatut.mettreAJourStatut(message);
-    }
+	/**
+	 * Affiche l'image dans le panneau d'affichage.
+	 * 
+	 * @param image L'image à afficher
+	 */
+	public void afficherImage(BufferedImage image) 
+	{
+		this.panelImage.setImage(image);
+	}
 
-    /**
-     * Affiche un message d'erreur dans une boîte de dialogue.
-     * 
-     * @param message Le message d'erreur
-     */
-    public void afficherErreur(String message) {
-        JOptionPane.showMessageDialog(this, message, "Erreur", JOptionPane.ERROR_MESSAGE);
-    }
+	/**
+	 * Met à jour le message de la barre de statut.
+	 * 
+	 * @param message Le message à afficher
+	 */
+	public void mettreAJourStatut(String message) 
+	{
+		this.panelStatut.mettreAJourStatut(message);
+	}
+
+	/**
+	 * Affiche un message d'erreur dans une boîte de dialogue.
+	 * 
+	 * @param message Le message d'erreur
+	 */
+	public void afficherErreur(String message) 
+	{
+		JOptionPane.showMessageDialog(this, message, "Erreur", JOptionPane.ERROR_MESSAGE);
+	}
 }

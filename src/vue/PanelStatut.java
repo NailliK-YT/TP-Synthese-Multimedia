@@ -17,25 +17,28 @@ import java.awt.*;
  * 
  * @author Équipe 6 - BUT 3 Informatique
  */
-public class PanelStatut extends JPanel {
+public class PanelStatut extends JPanel 
+{
+	private JLabel labelStatut;
 
-    private JLabel labelStatut;
+	public PanelStatut() 
+	{
+		this.setLayout(new BorderLayout());
 
-    public PanelStatut() {
-        setLayout(new BorderLayout());
+		this.labelStatut = new JLabel("En attente de chargement d'image...");
+		this.labelStatut.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-        labelStatut = new JLabel("En attente de chargement d'image...");
-        labelStatut.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		this.add(this.labelStatut, BorderLayout.CENTER);
 
-        add(labelStatut, BorderLayout.CENTER);
-    }
+	}
 
-    /**
-     * Met à jour le message affiché dans la barre de statut.
-     * 
-     * @param message Le message à afficher
-     */
-    public void mettreAJourStatut(String message) {
-        labelStatut.setText(message);
-    }
+	/**
+	 * Met à jour le message affiché dans la barre de statut.
+	 * 
+	 * @param message Le message à afficher
+	 */
+	public void mettreAJourStatut(String message) 
+	{
+		this.labelStatut.setText(message);
+	}
 }
