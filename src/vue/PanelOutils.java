@@ -88,73 +88,89 @@ public class PanelOutils extends JPanel
 		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		sectionFichiers = creerSection("FICHIERS");
-		ajouterBouton(sectionFichiers, "Ouvrir Image 1", e -> {
+		ajouterBouton(sectionFichiers, "Ouvrir Image 1", e -> 
+		{
 			if (controleurFichier != null)
 				controleurFichier.ouvrirImagePrincipale();
 		});
-		ajouterBouton(sectionFichiers, "Ouvrir Image 2", e -> {
+		ajouterBouton(sectionFichiers, "Ouvrir Image 2", e -> 
+		{
 			if (controleurFichier != null)
 				controleurFichier.ouvrirImageSecondaire();
 		});
-		ajouterBouton(sectionFichiers, "Sauvegarder", e -> {
+		ajouterBouton(sectionFichiers, "Sauvegarder", e -> 
+		{
 			if (controleurFichier != null)
 				controleurFichier.sauvegarderImage();
 		});
-		ajouterBouton(sectionFichiers, "Annuler (Restaurer)", e -> {
+		ajouterBouton(sectionFichiers, "Annuler (Restaurer)", e -> 
+		{
 			if (controleurFichier != null)
 				controleurFichier.restaurerOriginale();
 		});
 
 		sectionFusion = creerSection("FUSION 2 IMAGES");
-		ajouterBouton(sectionFusion, "Definir Position Image 2", e -> {
+		ajouterBouton(sectionFusion, "Definir Position Image 2", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.definirPositionImage2();
 		});
-		ajouterBouton(sectionFusion, "Superposer", e -> {
+		ajouterBouton(sectionFusion, "Superposer", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.superposerImages();
 		});
-		ajouterBouton(sectionFusion, "Avec Transparence", e -> {
+		ajouterBouton(sectionFusion, "Avec Transparence", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.superposerAvecAlpha();
 		});
-		ajouterBouton(sectionFusion, "Fond Vert (Chroma)", e -> {
+		ajouterBouton(sectionFusion, "Fond Vert (Chroma)", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.superposerChromaKey();
 		});
-		ajouterBouton(sectionFusion, "Juxtaposer", e -> {
+		ajouterBouton(sectionFusion, "Juxtaposer", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.fusionnerImages();
 		});
 
 		sectionTransform = creerSection("TRANSFORMATIONS");
-		ajouterBouton(sectionTransform, "Rotation Droite", e -> {
+		ajouterBouton(sectionTransform, "Rotation Droite", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.appliquerRotation(90);
 		});
-		ajouterBouton(sectionTransform, "Rotation Gauche", e -> {
+		ajouterBouton(sectionTransform, "Rotation Gauche", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.appliquerRotation(-90);
 		});
-		ajouterBouton(sectionTransform, "Luminosite", e -> {
+		ajouterBouton(sectionTransform, "Luminosite", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.ajusterLuminosite();
 		});
-		ajouterBouton(sectionTransform, "Contraste", e -> {
+		ajouterBouton(sectionTransform, "Contraste", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.ajusterContraste();
 		});
-		ajouterBouton(sectionTransform, "Teinte (Couleur)", e -> {
+		ajouterBouton(sectionTransform, "Teinte (Couleur)", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.decalerTeinte();
 		});
-		ajouterBouton(sectionTransform, "Noir et Blanc", e -> {
+		ajouterBouton(sectionTransform, "Noir et Blanc", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.convertirEnGris();
 		});
 
 		sectionOutils = creerSection("OUTILS DESSIN");
-		ajouterBouton(sectionOutils, "Pot de Peinture", e -> {
+		ajouterBouton(sectionOutils, "Pot de Peinture", e -> 
+		{
 			if (controleurImage != null) 
 			{
 				controleurImage.choisirCouleurPeinture();
@@ -165,15 +181,18 @@ public class PanelOutils extends JPanel
 				}
 			}
 		});
-		ajouterBouton(sectionOutils, "Texte Simple", e -> {
+		ajouterBouton(sectionOutils, "Texte Simple", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.ajouterTexteSimple();
 		});
-		ajouterBouton(sectionOutils, "Texte avec Fond", e -> {
+		ajouterBouton(sectionOutils, "Texte avec Fond", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.ajouterTexteAvecFond();
 		});
-		ajouterBouton(sectionOutils, "Texte Colore Image", e -> {
+		ajouterBouton(sectionOutils, "Texte Colore Image", e -> 
+		{
 			if (controleurImage != null)
 				controleurImage.ajouterTexteCouleurImage();
 		});
