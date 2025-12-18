@@ -395,27 +395,33 @@ public class TraitementTransformation
 		gPrime = 0; 
 		bPrime = 0;
 
-		if (h < 60) {
+		if (h < 60) 
+		{
 			rPrime = c;
 			gPrime = x;
 			bPrime = 0;
-		} else if (h < 120) {
+		} else if (h < 120) 
+		{
 			rPrime = x;
 			gPrime = c;
 			bPrime = 0;
-		} else if (h < 180) {
+		} else if (h < 180) 
+		{
 			rPrime = 0;
 			gPrime = c;
 			bPrime = x;
-		} else if (h < 240) {
+		} else if (h < 240) 
+		{
 			rPrime = 0;
 			gPrime = x;
 			bPrime = c;
-		} else if (h < 300) {
+		} else if (h < 300) 
+		{
 			rPrime = x;
 			gPrime = 0;
 			bPrime = c;
-		} else {
+		} else 
+		{
 			rPrime = c;
 			gPrime = 0;
 			bPrime = x;
@@ -425,7 +431,8 @@ public class TraitementTransformation
 		g = Math.round((gPrime + m) * 255);
 		b = Math.round((bPrime + m) * 255);
 
-		return new int[] { 
+		return new int[] 
+		{ 
 			TraitementTransformation.borner(r), 
 			TraitementTransformation.borner(g), 
 			TraitementTransformation.borner(b) 

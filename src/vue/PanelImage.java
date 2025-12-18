@@ -33,7 +33,8 @@ public class PanelImage extends JPanel
 	{
 		this.setBackground(new Color(200, 200, 200));
 
-		this.addMouseListener(new MouseAdapter() {
+		this.addMouseListener(new MouseAdapter() 
+		{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (PanelImage.this.controleurImage != null && PanelImage.this.image != null) 
@@ -62,7 +63,8 @@ public class PanelImage extends JPanel
 	public void setImage(BufferedImage image) 
 	{
 		this.image = image;
-		if (image != null) {
+		if (image != null) 
+		{
 		   this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
 		}
 		this.revalidate();

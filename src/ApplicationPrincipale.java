@@ -28,7 +28,8 @@ public class ApplicationPrincipale
 	 */
 	public static void main(String[] args) 
 	{
-		SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeLater(() -> 
+		{
 			System.out.println("==========================================");
 			System.out.println("  ÉDITEUR D'IMAGES - BUT 3 INFORMATIQUE");
 			System.out.println("  Architecture Modèle-Vue-Contrôleur");
