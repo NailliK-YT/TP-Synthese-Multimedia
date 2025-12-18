@@ -169,7 +169,8 @@ public class ControleurFichier
 	/**
 	 * Quitte l'application.
 	 */
-	public void quitter() {
+	public void quitter() 
+	{
 		int choix;
 
 		choix = JOptionPane.showConfirmDialog(
