@@ -39,7 +39,8 @@ public class TraitementFusion
 	public static BufferedImage superposer(
 		BufferedImage destination, BufferedImage source, 
 		int posX, int posY
-	) {
+	) 
+	{
 		BufferedImage resultat;
 		int           destX, destY, couleurSource;
 		
@@ -83,7 +84,8 @@ public class TraitementFusion
 	public static BufferedImage superposerAvecAlpha(
 		BufferedImage destination, BufferedImage source, 
 		int posX, int posY
-	) {
+	) 
+	{
 		BufferedImage resultat;
 		int           destX, destY, couleurSource, couleurDest, alphaSource;
 		int[]         compSource, compDest;
@@ -177,7 +179,8 @@ public class TraitementFusion
 			BufferedImage destination, BufferedImage source,
 			int posX, int posY,
 			int couleurTransparente, double tolerance
-	) {
+	) 
+	{
 		BufferedImage resultat;
 		int           destX, destY, couleurPixel;
 		double        distance;
@@ -231,7 +234,8 @@ public class TraitementFusion
 	 */
 	public static BufferedImage juxtaposerHorizontalement(
 		BufferedImage image1, BufferedImage image2, int largeurFondu
-	) {
+	) 
+	{
 		int           largeur1, largeur2, hauteur1, hauteur2, largeurTotale, hauteurMax;
 		BufferedImage resultat;
 		int           positionDansZoneFondu, couleur,  x1, x2, couleur1, couleur2;

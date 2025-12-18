@@ -52,7 +52,8 @@ public class TraitementRemplissage
 	 */
 	public static BufferedImage remplir(
 		BufferedImage image, int startX, int startY,int nouvelleCouleur, double tolerance
-	) {
+	) 
+	{
 		BufferedImage resultat;
 		int           largeur, hauteur, couleurOrigine, pixelsRemplis, x, y, couleurActuelle;
 		boolean[][]   visite;
@@ -123,7 +124,8 @@ public class TraitementRemplissage
 		boolean[][] visite,
 		int largeur, int hauteur, 
 		int x, int y
-	) {
+	) 
+	{
 		if (x >= 0 && x < largeur && y >= 0 && y < hauteur) 
 		{
 			if (!visite[x][y]) 
@@ -153,7 +155,8 @@ public class TraitementRemplissage
 		int startX, int startY,
 		int nouvelleCouleur, 
 		double tolerance
-	) {
+	) 
+	{
 		BufferedImage resultat;
 		int           largeur, hauteur, couleurOrigine, x, y, couleurActuelle, nx, ny;
 		boolean[][]   visite;
@@ -235,7 +238,8 @@ public class TraitementRemplissage
 		int x, int y,
 		int nouvelleCouleur, int couleurOrigine,
 		double tolerance
-	) {
+	) 
+	{
 		if (x < 0 || x >= image.getWidth() || y < 0 || y >= image.getHeight()) 
 			return;
 

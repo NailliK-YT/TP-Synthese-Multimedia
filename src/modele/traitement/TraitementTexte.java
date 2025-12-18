@@ -44,7 +44,8 @@ public class TraitementTexte
 		BufferedImage image, String texte,
 		int x, int y, 
 		Color couleur, int taillePolice
-	) {
+	) 
+	{
 		BufferedImage resultat;
 		Graphics2D    g2d;
 		Font          police;
@@ -91,7 +92,8 @@ public class TraitementTexte
 		int x, int y,
 		Color couleurTexte, Color couleurFond,
 		int taillePolice, int marge
-	) {
+	) 
+	{
 		BufferedImage resultat;
 		Graphics2D    g2d;
 		Font          police;
@@ -154,7 +156,8 @@ public class TraitementTexte
 	public static BufferedImage dessinerTexteAvecCouleurImage(
 		BufferedImage imageDestination, BufferedImage imageCouleurs,
 		String texte, int x, int y, int taillePolice
-	) {
+	) 
+	{
 		BufferedImage resultat, masque;
 		Graphics2D    gMasque;
 		Font          police;
@@ -231,7 +234,8 @@ public class TraitementTexte
 		BufferedImage imageDestination, BufferedImage imageCouleurs,
 		String texte, int x, int y,
 		Color couleurFond, int taillePolice, int marge
-	) {
+	) 
+	{
 
 		BufferedImage resultat;
 		Graphics2D    g2d;
